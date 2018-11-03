@@ -1,4 +1,4 @@
-Wallet Extension - Ninja Constant
+# Wallet Extension - Ninja Constant
 
 ![Constant is digital money you can actually use.
 ](https://ninja.org/images/097cd5318af52113111ccedbedccf959.png)
