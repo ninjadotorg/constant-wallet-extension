@@ -1,31 +1,16 @@
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import SaveIcon from '@material-ui/icons/Save';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Snackbar from '@material-ui/core/Snackbar';
-import WarningIcon from '@material-ui/icons/Warning';
+import { Divider, List, ListItemText, ListItemSecondaryAction, ListItem , Avatar, Button} from '@material-ui/core';
 
-import classNames from 'classnames';
+import ImageIcon from '@material-ui/icons/Image';
+import WorkIcon from '@material-ui/icons/Work';
+import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 
 const styles = theme => ({
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: "100%"
-  },
-  button: {
-    margin: theme.spacing.unit,
-  },
-  leftIcon: {
-    marginRight: theme.spacing.unit,
-  },
-  rightIcon: {
-    marginLeft: theme.spacing.unit,
-  },
-  iconSmall: {
-    fontSize: 20,
+  root: {
+    width: '100%',
+    backgroundColor: theme.palette.background.paper,
   },
 });
 
@@ -33,51 +18,8 @@ class AccountDetail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      accountName: '',
-      showAlert: '',
-      isAlert: false,
+      account: props.account,
     }
-    
-  }
-
-  handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    this.setState({ showAlert: '', isAlert: false });
-  };
-
-
-  showAlert = (msg) => {
-    let showAlert = <Snackbar
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center',
-      }}
-      open={this.state.isAlert}
-      autoHideDuration={3000}
-      onClose={this.handleClose}
-    >
-      <div className="alert alert-warning" role="alert"><WarningIcon /> {msg}</div>
-    </Snackbar>
-    this.setState({showAlert});
-  }
-  AccountDetail = () => {
-    const { accountName } = this.state;
-    if(!accountName){
-      this.setState({isAlert: true}, ()=>{
-        this.showAlert('Account name is required!');
-      });
-      return;
-    }
-      
-    this.onFinish();
-  }
-
-  changeAccountName = (e) => {
-    this.setState({accountName: e.target.value});
-    console.log(e.target.value);
   }
 
   onFinish = (data) => {
@@ -90,12 +32,51 @@ class AccountDetail extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { showAlert } = this.state;
-
+    const { account } = this.state
+console.log(account);
     return (
-      <div className="">
-        <h1>Create new account</h1>
+      <div className={classes.root}>
+        <List>
+          <ListItem>
+            <Avatar>
+              <BeachAccessIcon />
+            </Avatar>
+            <ListItemText primary="Name" secondary={account.name} />
+          </ListItem>
+          <Divider />
 
+          <ListItem>
+            <Avatar>
+              <ImageIcon />
+            </Avatar>
+            <ListItemText primary="Address" secondary="12345" />
+          </ListItem>
+          <Divider />
+
+          <ListItem>
+            <Avatar>
+              <WorkIcon />
+            </Avatar>
+            <ListItemText primary="Balance" secondary={account.value} />
+          </ListItem>
+          <Divider />
+
+          <ListItem>
+            <Avatar>
+              <WorkIcon />
+            </Avatar>
+            <ListItemText primary="Sealer Keyset" secondary={"<hide>"} />
+            <ListItemSecondaryAction>
+            <Button variant="contained" size="small" color="primary" className={classes.button2}
+                onClick={() => this.onFinish()} >
+                Export
+              </Button>
+            </ListItemSecondaryAction>
+          </ListItem>
+          
+          
+          
+        </List>
       </div>
     );
   }

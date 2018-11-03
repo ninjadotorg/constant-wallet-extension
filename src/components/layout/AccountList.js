@@ -7,6 +7,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import AccountDetail from '../layout/AccountDetail'
 import StarIcon from '@material-ui/icons/Star';
 import Paper from '@material-ui/core/Paper';
 import Dialog from '../core/Dialog'
@@ -75,7 +76,7 @@ class AccountList extends React.Component {
 
   openAccountDetail = (account) => {
     this.modalAccountDetailRef.open();
-    this.setState({modalAccountDetail: ''});
+    this.setState({modalAccountDetail: <AccountDetail account={account} />});
   }
 
   render() {
@@ -111,7 +112,7 @@ class AccountList extends React.Component {
             <h3 className="text-secondary mt-3">Not found your account(s)</h3>
           </div> 
         }
-        <Dialog title="ANNOUNCEMENT" onRef={modal => this.modalAccountDetailRef = modal}>
+        <Dialog title="Account Detail" onRef={modal => this.modalAccountDetailRef = modal} className={{margin: 0}}>
           {modalAccountDetail}
         </Dialog>
       </div>

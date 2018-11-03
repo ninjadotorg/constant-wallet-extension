@@ -58,7 +58,7 @@ class CreateAccount extends React.Component {
   showAlert = (msg, flag='warning') => {
     let showAlert = '', isAlert = true, icon = <WarningIcon />;
 
-    if(flag == 'success')
+    if(flag === 'success')
       icon = <SuccessIcon />;
 
     this.setState({isAlert}, ()=> {

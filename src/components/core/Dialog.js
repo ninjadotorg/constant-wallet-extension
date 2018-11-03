@@ -1,6 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+import { Button, Dialog, DialogActions, IconButton, Toolbar, AppBar, Slide, Typography } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+
+const Transition = (props) => {
+  return <Slide direction="up" {...props} />;
+}
+
+const styles = {
+  appBar: {
+    position: 'relative',
+  },
+  flex: {
+    flex: 1,
+  },
+};
 
 class Modal extends React.Component {
   constructor(props) {
@@ -34,31 +49,32 @@ class Modal extends React.Component {
 
   render() {
     
-    const { title, children, buttonAction, hideButtonClose } = this.props;
+    const { title, children, buttonAction, classes } = this.props;
+
     return (
 
       <div className="modal" ref={modal => this.modalRef = modal}>
         <Dialog
+          fullScreen
           open={this.state.isOpen}
           onClose={this.close}
-          aria-describedby="responsive-dialog-description"
-          aria-labelledby="responsive-dialog-title"
+          TransitionComponent={Transition}
+
         >
-          <DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              {children}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            { buttonAction }
-            {
-              !hideButtonClose && 
-              <Button onClick={() => this.close()} color="primary">
-                Close
-              </Button>
-            }
-          </DialogActions>
+          <AppBar className={classes.appBar}>
+            <Toolbar>
+              <IconButton color="inherit" onClick={() => this.close()} aria-label="Close">
+                <CloseIcon />
+              </IconButton>
+              <Typography variant="h6" color="inherit" className={classes.flex}>
+                {title}
+              </Typography>
+              { buttonAction }
+            </Toolbar>
+          </AppBar>
+          <div>
+            {children}
+          </div>
         </Dialog>
 
       </div>
@@ -67,6 +83,7 @@ class Modal extends React.Component {
 }
 
 Modal.propTypes = {
+  classes: PropTypes.object.isRequired,
   title: PropTypes.string,
   children: PropTypes.node.isRequired,
   onRef: PropTypes.func,
@@ -75,4 +92,5 @@ Modal.propTypes = {
   buttonAction: PropTypes.any
 };
 
-export default Modal;
+export default withStyles(styles)(Modal);
+
