@@ -2,14 +2,13 @@ import React from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import { List, ListItem, ListItemIcon, ListItemText, ListItemSecondaryAction, Button, Paper, Tooltip } from '@material-ui/core';
 import AccountDetail from '../layout/AccountDetail'
+import AccountSend from '../layout/AccountSend'
+
 import StarIcon from '@material-ui/icons/Star';
-import Paper from '@material-ui/core/Paper';
+import SendIcon from '@material-ui/icons/Send';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import Dialog from '../core/Dialog'
 import img1 from '../../assets/images/img1.png'
 
@@ -20,6 +19,15 @@ const styles = theme => ({
     ...theme.mixins.gutters(),
     marginTop: theme.spacing.unit * 5,
   },
+  button: {
+    margin: theme.spacing.unit
+  },
+  rightIcon: {
+    marginLeft: theme.spacing.unit,
+  },
+  leftIcon: {
+    marginRight: theme.spacing.unit,
+  },
 });
 
 class AccountList extends React.Component {
@@ -28,7 +36,8 @@ class AccountList extends React.Component {
     this.state = {
       walletName: '',
       accountList: [],
-      modalAccountDetail: ''
+      modalAccountDetail: '',
+      modalAccountSend: ''
     }
     
   }
@@ -79,9 +88,43 @@ class AccountList extends React.Component {
     this.setState({modalAccountDetail: <AccountDetail account={account} />});
   }
 
+  openAccountSend = (account) => {
+    this.modalAccountDetailRef.close();
+    this.setState({modalAccountDetail: '',
+      modalAccountSend: <AccountSend account={account} />
+    });
+    this.modalAccountSendRef.open();
+  }
+
+  openAccountCandidate = (account) => {
+    this.modalAccountDetailRef.close();
+    this.setState({modalAccountDetail: '',
+      modalAccountCandidate: ''
+    });
+    this.modalAccountCandidateRef.open();
+  }
+
+  get detailButtonAction(){
+    const { classes } = this.props;
+    
+    return (<div>
+      <Tooltip title="Register Candidate">
+        <Button mini variant="fab" color="secondary" className={classes.button} aria-label="Register Candidate"  onClick={() => this.openAccountCandidate()}>      
+          <AssignmentIndIcon />
+        </Button>
+      </Tooltip>
+      <Tooltip title="Send Coin">
+        <Button mini variant="fab" color="secondary" className={classes.button} aria-label="Send Coin"  onClick={() => this.openAccountSend()}>
+          <SendIcon />
+        </Button>
+      </Tooltip>
+    </div>
+    );
+  }
+
   render() {
     const { classes } = this.props;
-    const { walletName, accountList, modalAccountDetail } = this.state;
+    const { walletName, accountList, modalAccountDetail, modalAccountSend } = this.state;
 
     return (
       <div>
@@ -108,12 +151,19 @@ class AccountList extends React.Component {
             </List>
           </Paper> : 
           <div className="text-center">
-            <img src={img1} />
+            <img src={img1} alt="" />
             <h3 className="text-secondary mt-3">Not found your account(s)</h3>
           </div> 
         }
-        <Dialog title="Account Detail" onRef={modal => this.modalAccountDetailRef = modal} className={{margin: 0}}>
+        <Dialog title="Account Detail" onRef={modal => this.modalAccountDetailRef = modal} className={{margin: 0}} buttonAction={this.detailButtonAction}>
           {modalAccountDetail}
+        </Dialog>
+
+         <Dialog title="Send Coin" onRef={modal => this.modalAccountSendRef = modal} className={{margin: 0}}>
+          {modalAccountSend}
+        </Dialog>
+        <Dialog title="Register Candidate" onRef={modal => this.modalAccountCandidateRef = modal} className={{margin: 0}}>
+          <h1>Under construction</h1>
         </Dialog>
       </div>
     );

@@ -5,11 +5,15 @@
   "description": "Constant - Untraceable, stable, digital cash.",
   "version": "0.0.1",
   "author": "Ninja Constant",
+  "icons": {
+    "16": "img/logo-16.png",
+    "48": "img/logo-48.png",
+    "128": "img/logo-128.png"
+  },
   "browser_action": {
     "default_popup": "index.html",
-    "default_title": "Open the popup"
+    "default_title": "Constant Wallet Extension"
   },
-  "permissions": [
-  ],
+  "permissions": [ "contextMenus", "tabs", "storage"],
   "content_security_policy": "script-src 'self' 'sha256-GgRxrVOKNdB4LrRsVPDSbzvfdV4UqglmviH9GoBJ5jk='; object-src 'self'"
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { Button, Dialog, DialogActions, IconButton, Toolbar, AppBar, Slide, Typography } from '@material-ui/core';
+import { Dialog, IconButton, Toolbar, AppBar, Slide, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 
 const Transition = (props) => {
@@ -48,9 +48,8 @@ class Modal extends React.Component {
   }
 
   render() {
-    
     const { title, children, buttonAction, classes } = this.props;
-
+    
     return (
 
       <div className="modal" ref={modal => this.modalRef = modal}>
@@ -59,10 +58,9 @@ class Modal extends React.Component {
           open={this.state.isOpen}
           onClose={this.close}
           TransitionComponent={Transition}
-
         >
           <AppBar className={classes.appBar}>
-            <Toolbar>
+            <Toolbar style={{padding: '0 10px'}}>
               <IconButton color="inherit" onClick={() => this.close()} aria-label="Close">
                 <CloseIcon />
               </IconButton>

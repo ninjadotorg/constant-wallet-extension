@@ -2,10 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Divider, List, ListItemText, ListItemSecondaryAction, ListItem , Avatar, Button} from '@material-ui/core';
-
-import ImageIcon from '@material-ui/icons/Image';
-import WorkIcon from '@material-ui/icons/Work';
-import BeachAccessIcon from '@material-ui/icons/BeachAccess';
+import { Gradient, Work, Face, VpnKey } from '@material-ui/icons';
 
 const styles = theme => ({
   root: {
@@ -33,13 +30,13 @@ class AccountDetail extends React.Component {
   render() {
     const { classes } = this.props;
     const { account } = this.state
-console.log(account);
+    
     return (
       <div className={classes.root}>
         <List>
           <ListItem>
             <Avatar>
-              <BeachAccessIcon />
+              <Face />
             </Avatar>
             <ListItemText primary="Name" secondary={account.name} />
           </ListItem>
@@ -47,7 +44,7 @@ console.log(account);
 
           <ListItem>
             <Avatar>
-              <ImageIcon />
+              <Gradient />
             </Avatar>
             <ListItemText primary="Address" secondary="12345" />
           </ListItem>
@@ -55,7 +52,7 @@ console.log(account);
 
           <ListItem>
             <Avatar>
-              <WorkIcon />
+              <Work />
             </Avatar>
             <ListItemText primary="Balance" secondary={account.value} />
           </ListItem>
@@ -63,7 +60,7 @@ console.log(account);
 
           <ListItem>
             <Avatar>
-              <WorkIcon />
+              <VpnKey />
             </Avatar>
             <ListItemText primary="Sealer Keyset" secondary={"<hide>"} />
             <ListItemSecondaryAction>

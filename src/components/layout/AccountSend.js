@@ -1,14 +1,11 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import SaveIcon from '@material-ui/icons/Save';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import WarningIcon from '@material-ui/icons/Warning';
 import SuccessIcon from '@material-ui/icons/CheckCircle';
-
-import classNames from 'classnames';
 
 const styles = theme => ({
   textField: {
@@ -35,11 +32,11 @@ const styles = theme => ({
   },
 });
 
-class CreateAccount extends React.Component {
+class AccountSend extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      accountName: '',
+      toAddress: '',
       showAlert: '',
       isAlert: false,
     }
@@ -82,20 +79,20 @@ class CreateAccount extends React.Component {
     this.showAlert(msg, 'success');
   }
 
-  createAccount = () => {
-    const { accountName } = this.state;
-    if(!accountName){
+  SendCoin = () => {
+    const { toAddress } = this.state;
+    if(!toAddress){
       this.setState({isAlert: true}, ()=>{
-        this.showAlert('Account name is required!');
+        this.showAlert('To address is required!');
       });
       return;
     }
       
-    this.onFinish({message:'Create account is success!'});
+    this.onFinish({message:'Send is completed!'});
   }
 
-  changeAccountName = (e) => {
-    this.setState({accountName: e.target.value});
+  changeToAddress = (e) => {
+    this.setState({toAddress: e.target.value});
   }
 
   onFinish = (data) => {
@@ -111,41 +108,55 @@ class CreateAccount extends React.Component {
     const { showAlert } = this.state;
 
     return (
-      <div className="">
+      <div style={{padding: '2rem'}}>
         {showAlert}
-        <h1 className="mb-2">Create new account</h1>
-        <div><span className="badge badge-pill badge-light">* This is some tips that user need to know</span></div>
+        <div><span className="badge badge-pill badge-light">* Only send CONSTANT to an CONSTANT address.</span></div>
 
         <TextField
           required
-          id="accountName"
-          label="Account Name"
+          id="from"
+          label="From"
           className={classes.textField}
           margin="normal"
           variant="outlined"
-          value={this.state.accountName}
-          onChange={(evt) => this.changeAccountName(evt)}
+          value={this.state.toAddress}
+          onChange={(evt) => this.changeToAddress(evt)}
+        />
+
+        <TextField
+          required
+          id="to"
+          label="To"
+          className={classes.textField}
+          margin="normal"
+          variant="outlined"
+          value={this.state.toAddress}
+          onChange={(evt) => this.changeToAddress(evt)}
+        />
+
+        <TextField
+          required
+          id="amount"
+          label="Amount"
+          className={classes.textField}
+          margin="normal"
+          variant="outlined"
+          value={this.state.toAddress}
+          onChange={(evt) => this.changeToAddress(evt)}
         />
 
         <Button variant="contained" size="large" color="primary" className={classes.button} fullWidth
-          onClick={() => this.createAccount()}
-        >
-          <SaveIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
-          Create Account
-        </Button>
-        <Button variant="contained" size="small" color="default" className={classes.button2}
-          onClick={() => this.onFinish()}
-        >
-          Back
+          onClick={() => this.SendCoin()} >
+            Send
         </Button>
       </div>
     );
   }
 }
 
-CreateAccount.propTypes = {
+AccountSend.propTypes = {
   classes: PropTypes.object.isRequired,
 
 };
 
-export default withStyles(styles)(CreateAccount);
+export default withStyles(styles)(AccountSend);

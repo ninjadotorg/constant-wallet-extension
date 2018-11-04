@@ -35,11 +35,11 @@ const styles = theme => ({
   },
 });
 
-class CreateAccount extends React.Component {
+class ImportAccount extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      accountName: '',
+      privateKey: '',
       showAlert: '',
       isAlert: false,
     }
@@ -82,20 +82,20 @@ class CreateAccount extends React.Component {
     this.showAlert(msg, 'success');
   }
 
-  createAccount = () => {
-    const { accountName } = this.state;
-    if(!accountName){
+  ImportAccount = () => {
+    const { privateKey } = this.state;
+    if(!privateKey){
       this.setState({isAlert: true}, ()=>{
-        this.showAlert('Account name is required!');
+        this.showAlert('Private key is required!');
       });
       return;
     }
       
-    this.onFinish({message:'Create account is success!'});
+    this.onFinish({message:'Import account is success!'});
   }
 
-  changeAccountName = (e) => {
-    this.setState({accountName: e.target.value});
+  changePrivateKey = (e) => {
+    this.setState({privateKey: e.target.value});
   }
 
   onFinish = (data) => {
@@ -113,25 +113,31 @@ class CreateAccount extends React.Component {
     return (
       <div className="">
         {showAlert}
-        <h1 className="mb-2">Create new account</h1>
-        <div><span className="badge badge-pill badge-light">* This is some tips that user need to know</span></div>
+        <h1 className="mb-2">Import account</h1>
+        <div>
+          <span className="badge badge-pill badge-light" style={{lineHeight: '1.2rem', whiteSpace: 'unset'}}>
+            * Imported accounts will not be associated with 
+            your originally created Constant account seedphrase. 
+            Learn more about imported accounts <a href="https://ninja.org/constant">here</a>
+          </span>
+        </div>
 
         <TextField
           required
-          id="accountName"
-          label="Account Name"
+          id="privateKey"
+          label="Private Key"
           className={classes.textField}
           margin="normal"
           variant="outlined"
-          value={this.state.accountName}
-          onChange={(evt) => this.changeAccountName(evt)}
+          value={this.state.priv4ateKey}
+          onChange={(evt) => this.changePrivateKey(evt)}
         />
 
         <Button variant="contained" size="large" color="primary" className={classes.button} fullWidth
-          onClick={() => this.createAccount()}
+          onClick={() => this.ImportAccount()}
         >
           <SaveIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
-          Create Account
+          Import Account
         </Button>
         <Button variant="contained" size="small" color="default" className={classes.button2}
           onClick={() => this.onFinish()}
@@ -143,9 +149,9 @@ class CreateAccount extends React.Component {
   }
 }
 
-CreateAccount.propTypes = {
+ImportAccount.propTypes = {
   classes: PropTypes.object.isRequired,
 
 };
 
-export default withStyles(styles)(CreateAccount);
+export default withStyles(styles)(ImportAccount);

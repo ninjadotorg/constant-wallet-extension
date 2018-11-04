@@ -24,6 +24,10 @@ h1 {
 
 h1, h2, h3 { font-weight: 400; }
 
+.App{
+  background: url(assets/images/bg.png) no-repeat center center;
+}
+
 .container{
   margin-top: 1rem;
 }

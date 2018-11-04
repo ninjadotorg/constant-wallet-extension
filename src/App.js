@@ -4,6 +4,7 @@ import './App.css';
 import Header from './components/layout/Header';
 import Home from './components/pages/Home';
 import CreateAccount from './components/pages/Account/Create';
+import ImportAccount from './components/pages/Account/Import';
 import Snackbar from '@material-ui/core/Snackbar';
 import WarningIcon from '@material-ui/icons/Warning';
 import SuccessIcon from '@material-ui/icons/CheckCircle';
@@ -51,6 +52,10 @@ class App extends Component {
       screen = <CreateAccount onFinish={(data) => { this.backHome(data); }} />;
       headerTitle = 'Account';
     }
+    else if(action === 'IMPORT_ACCOUNT'){
+      screen = <ImportAccount onFinish={(data) => { this.backHome(data); }} />;
+      headerTitle = 'Account';
+    }
     else{
       screen = <Home />;
     }
@@ -61,7 +66,7 @@ class App extends Component {
   showAlert = (msg, flag='warning') => {
     let showAlert = '', isAlert = true, icon = <WarningIcon />;
 
-    if(flag == 'success')
+    if(flag === 'success')
       icon = <SuccessIcon />;
 
     this.setState({isAlert}, ()=> {
