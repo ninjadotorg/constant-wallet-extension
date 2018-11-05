@@ -29,4 +29,4 @@ Your app is ready to be deployed!
 
 ## Learn More
 
-You can learn more information [Ninja Constant](https://ninja.org/constant).
+You can learn more information [Ninja Constant](https://constant.money/).
