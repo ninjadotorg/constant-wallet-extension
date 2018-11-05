@@ -4,6 +4,7 @@ import './App.css';
 import Header from './components/layout/Header';
 import Home from './components/pages/Home';
 import CreateAccount from './components/pages/Account/Create';
+import Settings from './components/pages/Settings';
 import ImportAccount from './components/pages/Account/Import';
 import Snackbar from '@material-ui/core/Snackbar';
 import WarningIcon from '@material-ui/icons/Warning';
@@ -23,6 +24,12 @@ const theme = createMuiTheme({
       dark: '#c58300',
       contrastText: '#000',
     },
+    third: {
+      light: '#ff6333',
+      main: '#ff3d00',
+      dark: '#b22a00',
+      contrastText: '#000',
+    }
   },
 });
 
@@ -55,6 +62,10 @@ class App extends Component {
     else if(action === 'IMPORT_ACCOUNT'){
       screen = <ImportAccount onFinish={(data) => { this.backHome(data); }} />;
       headerTitle = 'Account';
+    }
+    else if(action === 'SETTINGS'){
+      screen = <Settings onFinish={(data) => { this.backHome(data); }} />;
+      headerTitle = 'Settings';
     }
     else{
       screen = <Home />;

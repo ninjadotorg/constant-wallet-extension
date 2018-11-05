@@ -85,7 +85,7 @@ class Header extends React.Component {
           <ListItemIcon><IconInfo /></ListItemIcon>
           <ListItemText primary="Info & Help" />
         </ListItem>
-        <ListItem button key="settings">
+        <ListItem button key="settings" onClick={() => this.selectMenu('SETTINGS')}>
           <ListItemIcon><IconSettings /></ListItemIcon>
           <ListItemText primary="Settings" />
         </ListItem>
