@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { List, ListItem, ListItemIcon, ListItemText, ListItemSecondaryAction, Button, Paper, Tooltip } from '@material-ui/core';
@@ -11,6 +10,7 @@ import SendIcon from '@material-ui/icons/Send';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import Dialog from '../core/Dialog'
 import img1 from '../../assets/images/img1.png'
+import Account from '../../services/Account';
 
 const styles = theme => ({
   root: {
@@ -43,7 +43,7 @@ class AccountList extends React.Component {
   }
 
   async componentDidMount(){
-    const result = await this.getAccountList();
+    const result = await Account.getAccountList([]);
     if(result){
       const accounts = result.Accounts, walletName = result.WalletName;
       let accountList = [];
@@ -59,29 +59,7 @@ class AccountList extends React.Component {
     }
   }
 
-  async getAccountList() {
 
-    const url = "http://127.0.0.1:9334",
-      username = '', 
-      password = '';
-
-    const auth = "Basic " + new Buffer(username+':'+password).toString('base64');
-    const options = {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json;charset=UTF-8',
-        'Authorization': auth
-      },
-      url,
-      data: {"jsonrpc":"1.0","method":"listaccounts","params":[],"id":1}
-    };
-    const response = await axios(options);
-    if (response.status === 200) {
-      if(response.data && response.data.Result)
-      return response.data.Result;
-    }
-    return false;
-  }
 
   openAccountDetail = (account) => {
     this.modalAccountDetailRef.open();

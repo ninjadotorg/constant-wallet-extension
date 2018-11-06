@@ -1,12 +1,9 @@
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import SaveIcon from '@material-ui/icons/Save';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Snackbar from '@material-ui/core/Snackbar';
-import WarningIcon from '@material-ui/icons/Warning';
-import SuccessIcon from '@material-ui/icons/CheckCircle';
+import { Snackbar, TextField, Button } from '@material-ui/core';
+import { Warning as IconWarning, Save as IconSave, CheckCircle as IconSuccess, Error as IconError } from '@material-ui/icons';
+import Account from '../../../services/Account';
 
 import classNames from 'classnames';
 
@@ -43,7 +40,6 @@ class CreateAccount extends React.Component {
       showAlert: '',
       isAlert: false,
     }
-    
   }
 
   handleClose = (event, reason) => {
@@ -56,10 +52,12 @@ class CreateAccount extends React.Component {
 
 
   showAlert = (msg, flag='warning') => {
-    let showAlert = '', isAlert = true, icon = <WarningIcon />;
+    let showAlert = '', isAlert = true, icon = <IconWarning />;
 
     if(flag === 'success')
-      icon = <SuccessIcon />;
+      icon = <IconSuccess />;
+    else if(flag === 'danger')
+    icon = <IconError />;
 
     this.setState({isAlert}, ()=> {
       showAlert = <Snackbar
@@ -82,16 +80,26 @@ class CreateAccount extends React.Component {
     this.showAlert(msg, 'success');
   }
 
-  createAccount = () => {
-    const { accountName } = this.state;
+  showError = (msg) => {
+    this.showAlert(msg, 'danger');
+  }
+
+  createAccount = async () => {
+    const { accountName } = this.state;console.log(accountName);
     if(!accountName){
       this.setState({isAlert: true}, ()=>{
         this.showAlert('Account name is required!');
       });
       return;
     }
-      
-    this.onFinish({message:'Create account is success!'});
+
+    const result = await Account.createAccount(accountName);console.log(result);
+    if(result && result.PublicKey){
+      this.onFinish({message:'Create account is success!'});
+    }
+    else{
+      this.showError('Create is error!');
+    }
   }
 
   changeAccountName = (e) => {
@@ -130,7 +138,7 @@ class CreateAccount extends React.Component {
         <Button variant="contained" size="large" color="primary" className={classes.button} fullWidth
           onClick={() => this.createAccount()}
         >
-          <SaveIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
+          <IconSave className={classNames(classes.leftIcon, classes.iconSmall)} />
           Create Account
         </Button>
         <Button variant="contained" size="small" color="default" className={classes.button2}

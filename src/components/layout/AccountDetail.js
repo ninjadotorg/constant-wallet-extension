@@ -1,10 +1,10 @@
 import React from 'react';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Divider, List, ListItemText, ListItemSecondaryAction, ListItem , Avatar, Button, Snackbar, TextField} from '@material-ui/core';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
+import Account from '../../services/Account';
 
 import { 
   Security as IconSecurity, 
@@ -49,18 +49,18 @@ class AccountDetail extends React.Component {
   }
 
   async componentDidMount(){
-    const key = await this.getPublicKey(this.state.account.name);
+    const key = await Account.getPublicKey(this.state.account.name);
     if(key){
       this.setState({privateKey: key.PrivateKey, publicKey: key.PublicKey, readonlyKey: key.ReadonlyKey})
     }
 
-    const balance = await this.getBalance(`[${this.state.account.name}, 1, 12345678]`);
+    const balance = await Account.getBalance(`[${this.state.account.name}, 1, 12345678]`);
     if(balance){
       this.setState({balance: balance.Result});
     }
   }
 
-  onFinish = (data) => {console.log('onFinish');
+  onFinish = (data) => {
     const { onFinish } = this.props;
     
     if (onFinish) {
@@ -75,7 +75,7 @@ class AccountDetail extends React.Component {
     } 
     else{
       if(!privateKey){
-        const result = await this.getPrivateKey(publicKey);
+        const result = await Account.getPrivateKey(publicKey);
         if(result && result.PrivateKey){
           privateKey = result.PrivateKey;
           this.setState({privateKey: result.PrivateKey});
@@ -83,7 +83,7 @@ class AccountDetail extends React.Component {
       }
         
       if(privateKey){
-        sealerKey = await this.getSealerKey(privateKey);
+        sealerKey = await Account.getSealerKey(privateKey);
         if(sealerKey){
           this.setState({sealerKey});
         }
@@ -96,7 +96,7 @@ class AccountDetail extends React.Component {
     this.setState({isExportDumpKey: !isExportDumpKey});
 
     if(!privateKey){
-      const result = await this.getPrivateKey(publicKey);
+      const result = await Account.getPrivateKey(publicKey);
       if(result && result.PrivateKey){
         this.setState({privateKey: result.PrivateKey});
       }
@@ -136,69 +136,6 @@ class AccountDetail extends React.Component {
 
       this.setState({showAlert});
     });
-  }
-
-  getOption(method, params){
-    const url = "http://127.0.0.1:9334",
-      username = '', 
-      password = '';
-
-    const auth = "Basic " + new Buffer(username+':'+password).toString('base64');
-    const options = {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json;charset=UTF-8',
-        'Authorization': auth
-      },
-      url,
-      data: {
-        "jsonrpc":"1.0",
-        "method": method, 
-        "params": params,
-        "id":1
-      }
-    };
-
-    return options;
-  }
-
-  async getPublicKey(param) {
-  
-    const response = await axios(this.getOption("getaccountaddress", param));
-    if (response.status === 200) {
-      if(response.data && response.data.Result)
-      return response.data.Result;
-    }
-    return false;
-  }
-
-  async getBalance(param) {
-  
-    const response = await axios(this.getOption("getbalance", param));
-    if (response.status === 200) {
-      if(response.data && response.data.Result)
-      return response.data.Result;
-    }
-    return false;
-  }
-
-  async getSealerKey(param) {
-  
-    const response = await axios(this.getOption("createsealerkeyset", param));
-    if (response.status === 200) {
-      if(response.data && response.data.Result)
-        return response.data.Result;
-    }
-    return false;
-  }
-
-  async getPrivateKey(param) {
-    const response = await axios(this.getOption("dumpprivkey", param));
-    if (response.status === 200) {
-      if(response.data && response.data.Result)
-        return response.data.Result;
-    }
-    return false;
   }
 
   get showDumpKey(){
@@ -269,7 +206,7 @@ class AccountDetail extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { account, sealerKey, privateKey, isExportDumpKey, showAlert, publicKey, balance } = this.state
+    const { account, sealerKey, isExportDumpKey, showAlert, publicKey, balance } = this.state
     
     return (
       <div className={classes.root}>
