@@ -1,5 +1,5 @@
 import React from 'react';
-import AccountList from '../layout/AccountList'
+import AccountList from '../layout/Account/List'
 
 class Home extends React.Component {
   constructor(props) {

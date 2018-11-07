@@ -2,9 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
-import { TextField, ListSubheader, List, ListItem, ListItemIcon, ListItemText, Collapse, Button, Snackbar } from '@material-ui/core';
+import Dialog from '../core/Dialog'
+import ServerList from '../layout/Setting/ServerList';
+import ServerAdd from '../layout/Setting/ServerAdd';
 
-import SaveIcon from '@material-ui/icons/Save';
+import { Tooltip, ListSubheader, List, ListItem, ListItemIcon, ListItemText, Collapse, Button, Snackbar } from '@material-ui/core';
+
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import DraftsIcon from '@material-ui/icons/Drafts';
 import SendIcon from '@material-ui/icons/Send';
@@ -13,8 +16,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import StarBorder from '@material-ui/icons/StarBorder';
 import WarningIcon from '@material-ui/icons/Warning';
 import SuccessIcon from '@material-ui/icons/CheckCircle';
-import IconCast from '@material-ui/icons/Cast';
-import classNames from 'classnames';
+import { Add as IconAdd } from '@material-ui/icons';
 
 const styles = theme => ({
   root: {
@@ -31,6 +33,8 @@ class Settings extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      modalServerList: '',
+      modalServerAdd: '',
       accountName: '',
       showAlert: '',
       isAlert: false,
@@ -103,17 +107,46 @@ class Settings extends React.Component {
     }
   }
 
+  openServerAdd = (account) => {
+    //this.modalAccountDetailRef.close();
+    this.setState({//modalAccountDetail: '',
+      modalServerAdd: <ServerAdd  />
+    });
+    this.modalServerAddRef.open();
+  }
+
+  get serverButtonAction(){
+    const { classes } = this.props;
+    
+    return (<div>
+      <Tooltip title="Add Server">
+        <Button mini variant="fab" color="secondary" className={classes.button} aria-label="Add Server" onClick={() => this.openServerAdd()}>
+          <IconAdd />
+        </Button>
+      </Tooltip>
+    </div>
+    );
+  }
+
+  openServerList = () => {
+    this.setState({
+      modalServerList: <ServerList />
+    });
+    this.modalServerListRef.open();
+  }
+
   render() {
     const { classes } = this.props;
-    const { showAlert } = this.state;
+    const { showAlert, modalServerList, modalServerAdd } = this.state;
 
     return (
       <div className={classes.root}>
+        {showAlert}
         <List
           component="nav"
           subheader={<ListSubheader component="div">Network</ListSubheader>}
         >
-          <ListItem button>
+          <ListItem button onClick={() => this.openServerList()}>
             <ListItemIcon>
               <SendIcon />
             </ListItemIcon>
@@ -143,6 +176,14 @@ class Settings extends React.Component {
             </List>
           </Collapse>
         </List>
+
+        <Dialog title="Servers" onRef={modal => this.modalServerListRef = modal} className={{margin: 0}} buttonAction={this.serverButtonAction}>
+          {modalServerList}
+        </Dialog>
+
+        <Dialog title="Add Server" onRef={modal => this.modalServerAddRef = modal} className={{margin: 0}}>
+          {modalServerAdd}
+        </Dialog>
       </div>
     );
   }

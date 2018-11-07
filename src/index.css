@@ -61,3 +61,11 @@ h1, h2, h3 { font-weight: 400; }
 .word-wrap-break{
   word-wrap: break-word !important;
 }
+
+.word-break-all{
+  word-break: break-all !important;
+}
+
+.confirmDialog{
+  min-width: 320px;
+}

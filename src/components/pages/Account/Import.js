@@ -1,12 +1,9 @@
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import SaveIcon from '@material-ui/icons/Save';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Snackbar from '@material-ui/core/Snackbar';
-import WarningIcon from '@material-ui/icons/Warning';
-import SuccessIcon from '@material-ui/icons/CheckCircle';
+import { Snackbar, TextField, Button } from '@material-ui/core';
+import { Warning as IconWarning, Save as IconSave, CheckCircle as IconSuccess, Error as IconError } from '@material-ui/icons';
+import Account from '../../../services/Account';
 
 import classNames from 'classnames';
 
@@ -26,9 +23,6 @@ const styles = theme => ({
   },
   leftIcon: {
     marginRight: theme.spacing.unit,
-  },
-  rightIcon: {
-    marginLeft: theme.spacing.unit,
   },
   iconSmall: {
     fontSize: 20,
@@ -54,12 +48,13 @@ class ImportAccount extends React.Component {
     this.setState({ showAlert: '', isAlert: false });
   };
 
-
   showAlert = (msg, flag='warning') => {
-    let showAlert = '', isAlert = true, icon = <WarningIcon />;
+    let showAlert = '', isAlert = true, icon = <IconWarning />;
 
     if(flag === 'success')
-      icon = <SuccessIcon />;
+      icon = <IconSuccess />;
+    else if(flag === 'danger')
+    icon = <IconError />;
 
     this.setState({isAlert}, ()=> {
       showAlert = <Snackbar
@@ -82,20 +77,44 @@ class ImportAccount extends React.Component {
     this.showAlert(msg, 'success');
   }
 
-  ImportAccount = () => {
-    const { privateKey } = this.state;
+  showError = (msg) => {
+    this.showAlert(msg, 'danger');
+  }
+
+  importAccount = async () => {
+    const { privateKey, accountName } = this.state;
+    if(!accountName){
+      this.setState({isAlert: true}, ()=>{
+        this.showAlert('Account name is required!');
+      });
+      return;
+    }
+
     if(!privateKey){
       this.setState({isAlert: true}, ()=>{
         this.showAlert('Private key is required!');
       });
       return;
     }
-      
-    this.onFinish({message:'Import account is success!'});
+
+    const result = await Account.importAccount([privateKey, accountName, '12345678']);
+    if(result && result.PaymentAddress){
+      this.onFinish({message:'Account is imported!'});
+    }
+    else if(result.error){
+      this.showError(result.message);
+    }
+    else{
+      this.showError('Import error!');
+    }
   }
 
   changePrivateKey = (e) => {
     this.setState({privateKey: e.target.value});
+  }
+
+  changeAccountName = (e) => {
+    this.setState({accountName: e.target.value});
   }
 
   onFinish = (data) => {
@@ -118,9 +137,20 @@ class ImportAccount extends React.Component {
           <span className="badge badge-pill badge-light" style={{lineHeight: '1.2rem', whiteSpace: 'unset'}}>
             * Imported accounts will not be associated with 
             your originally created Constant account seedphrase. 
-            Learn more about imported accounts <a href="https://ninja.org/constant">here</a>
+            Learn more about imported accounts <a href="https://constant.money">here</a>
           </span>
         </div>
+
+        <TextField
+          required
+          id="accountName"
+          label="Account Name"
+          className={classes.textField}
+          margin="normal"
+          variant="outlined"
+          value={this.state.accountName}
+          onChange={(evt) => this.changeAccountName(evt)}
+        />
 
         <TextField
           required
@@ -129,14 +159,14 @@ class ImportAccount extends React.Component {
           className={classes.textField}
           margin="normal"
           variant="outlined"
-          value={this.state.priv4ateKey}
+          value={this.state.privateKey}
           onChange={(evt) => this.changePrivateKey(evt)}
         />
 
         <Button variant="contained" size="large" color="primary" className={classes.button} fullWidth
-          onClick={() => this.ImportAccount()}
+          onClick={() => this.importAccount()}
         >
-          <SaveIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
+          <IconSave className={classNames(classes.leftIcon, classes.iconSmall)} />
           Import Account
         </Button>
         <Button variant="contained" size="small" color="default" className={classes.button2}

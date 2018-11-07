@@ -21,14 +21,11 @@ const styles = theme => ({
     marginTop: '1.5rem',
     width: "25%"
   },
-  leftIcon: {
-    marginRight: theme.spacing.unit,
-  },
-  rightIcon: {
-    marginLeft: theme.spacing.unit,
-  },
   iconSmall: {
     fontSize: 20,
+  },
+  leftIcon: {
+    marginRight: theme.spacing.unit,
   },
 });
 
@@ -85,7 +82,7 @@ class CreateAccount extends React.Component {
   }
 
   createAccount = async () => {
-    const { accountName } = this.state;console.log(accountName);
+    const { accountName } = this.state;
     if(!accountName){
       this.setState({isAlert: true}, ()=>{
         this.showAlert('Account name is required!');
@@ -93,12 +90,12 @@ class CreateAccount extends React.Component {
       return;
     }
 
-    const result = await Account.createAccount(accountName);console.log(result);
-    if(result && result.PublicKey){
-      this.onFinish({message:'Create account is success!'});
+    const result = await Account.createAccount(accountName);
+    if(result && result.PaymentAddress){
+      this.onFinish({message:'Account is created!'});
     }
     else{
-      this.showError('Create is error!');
+      this.showError('Create error!');
     }
   }
 

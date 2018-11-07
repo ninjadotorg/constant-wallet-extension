@@ -7,8 +7,12 @@ import CreateAccount from './components/pages/Account/Create';
 import Settings from './components/pages/Settings';
 import ImportAccount from './components/pages/Account/Import';
 import Snackbar from '@material-ui/core/Snackbar';
-import WarningIcon from '@material-ui/icons/Warning';
-import SuccessIcon from '@material-ui/icons/CheckCircle';
+
+import { 
+  Error as IconError,
+  CheckCircle as IconSuccess,
+  Warning as IconWarning,
+} from '@material-ui/icons';
 
 const theme = createMuiTheme({
   palette: {
@@ -74,11 +78,15 @@ class App extends Component {
     this.setState({screen, headerTitle});
   }
   
-  showAlert = (msg, flag='warning') => {
-    let showAlert = '', isAlert = true, icon = <WarningIcon />;
+  showAlert = (msg, {flag='warning', html=false, duration=2000, hideIcon=false}) => {
+    let showAlert = '', isAlert = true, icon = '';
 
     if(flag === 'success')
-      icon = <SuccessIcon />;
+      icon = <IconSuccess />;
+    else if(flag === 'danger')
+      icon = <IconError />;
+      else if(flag === 'warning')
+      icon = <IconWarning />;
 
     this.setState({isAlert}, ()=> {
       showAlert = <Snackbar
@@ -87,10 +95,10 @@ class App extends Component {
           horizontal: 'center',
         }}
         open={isAlert}
-        autoHideDuration={3000}
+        autoHideDuration={duration}
         onClose={this.handleClose}
       >
-        <div className={"alert alert-"+flag} role="alert">{icon} {msg}</div>
+        <div className={"alert alert-"+flag} role="alert">{!hideIcon && icon} {msg}</div>
       </Snackbar>
 
       this.setState({showAlert});
@@ -98,11 +106,17 @@ class App extends Component {
   }
 
   showSuccess = (msg) => {
-    this.showAlert(msg, 'success');
+    this.showAlert(msg, {flag: 'success', duration: 3000, hideIcon: true});
   }
 
+  showWarning = (msg) => {
+    this.showAlert(msg, {flag: 'warning'});
+  }
+
+  showError = (msg) => {
+    this.showAlert(msg, {flag: 'danger'});
+  }
   backHome = (data) => {
-    console.log(data);
     this.setState({screen: <Home />, headerTitle: 'Home'});
 
     if(data && data.message){

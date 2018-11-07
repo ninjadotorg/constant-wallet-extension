@@ -27,7 +27,7 @@ export default class Account {
   }
 
 
-  static async getPublicKey(param) {
+  static async getPaymentAddress(param) {
   
     const response = await axios(Account.getOption("getaccountaddress", param));
     if (response.status === 200) {
@@ -39,22 +39,100 @@ export default class Account {
 
   static async getBalance(param) {
   
-    const response = await axios(Account.getOption("getbalance", param));
-    if (response.status === 200) {
-      if(response.data && response.data.Result)
-      return response.data.Result;
+    try{
+      const response = await axios(Account.getOption("getbalance", param));
+      if (response.status === 200) {
+        if(response.data && response.data.Result)
+          return response.data.Result;
+      }
     }
+    catch(e){
+      return {error: true, message: e.message};
+    }
+
+    return false;
+  }
+
+  static async importAccount(param) {
+
+    try{
+      const response = await axios(Account.getOption("importaccount", param));
+      if (response.status === 200) {
+        if(response.data && response.data.Result)
+          return response.data.Result;
+      }
+    }
+    catch(e){
+      return {error: true, message: e.message};
+    }
+    
+    return false;
+  }
+
+  static async removeAccount(param) {
+
+    try{
+      const response = await axios(Account.getOption("removeaccount", param));
+      if (response.status === 200) {
+        if(response.data && response.data.Result)
+          return response.data.Result;
+      }
+    }
+    catch(e){
+      return {error: true, message: e.message};
+    }
+    
     return false;
   }
 
 
+  static async registerCandidate(param) {
+
+    try{
+      const response = await axios(Account.getOption("sendregistration", param));
+      if (response.status === 200) {
+        if(response.data && response.data.Result)
+          return response.data.Result;
+      }
+    }
+    catch(e){
+      return {error: true, message: e.message};
+    }
+    
+    return false;
+  }
+
+  static async sendConstant(param) {
+
+    try{
+      const response = await axios(Account.getOption("sendmany", param));
+      if (response.status === 200) {
+        if(response.data && response.data.Result)
+          return response.data.Result;
+      }
+    }
+    catch(e){
+      return {error: true, message: e.message};
+    }
+    
+    return false;
+  }
+
   static async createAccount(param) {
 
-    const response = await axios(Account.getOption("getaccountaddress", param));
-    if (response.status === 200) {console.log(response);
-      if(response.data && response.data.Result)
-        return response.data.Result;
+    try{
+        const response = await axios(Account.getOption("getaccountaddress", param));
+        if (response.status === 200) {
+          if(response.data && response.data.Result)
+            return response.data.Result;
+        }
+        return false;
+      }
+
+    catch(e){
+      return {error: true, message: e.message};
     }
+
     return false;
   }
 
@@ -70,7 +148,7 @@ export default class Account {
 
   static async getSealerKey(param) {
   
-    const response = await axios(Account.getOption("createsealerkeyset", param));
+    const response = await axios(Account.getOption("createproducerkeyset", param));
     if (response.status === 200) {
       if(response.data && response.data.Result)
         return response.data.Result;
