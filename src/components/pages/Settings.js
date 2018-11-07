@@ -177,11 +177,11 @@ class Settings extends React.Component {
           </Collapse>
         </List>
 
-        <Dialog title="Servers" onRef={modal => this.modalServerListRef = modal} className={{margin: 0}} buttonAction={this.serverButtonAction}>
+        <Dialog title="RPC Servers" onRef={modal => this.modalServerListRef = modal} className={{margin: 0}} buttonAction={this.serverButtonAction}>
           {modalServerList}
         </Dialog>
 
-        <Dialog title="Add Server" onRef={modal => this.modalServerAddRef = modal} className={{margin: 0}}>
+        <Dialog title="Add RPC Server" onRef={modal => this.modalServerAddRef = modal} className={{margin: 0}}>
           {modalServerAdd}
         </Dialog>
       </div>

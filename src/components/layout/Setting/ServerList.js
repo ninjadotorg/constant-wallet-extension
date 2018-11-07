@@ -1,18 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { List, ListItem, ListItemIcon, ListItemText, ListItemSecondaryAction, Paper, CircularProgress } from '@material-ui/core';
+import { List, ListItem, ListItemIcon, ListItemText, Divider, CircularProgress } from '@material-ui/core';
 
 import { Star as IconStar } from '@material-ui/icons';
 import Server from '../../../services/Server';
 
 const styles = theme => ({
-  root: {
-    width: '100%',
-    backgroundColor: theme.palette.background.paper,
-    ...theme.mixins.gutters(),
-    marginTop: theme.spacing.unit * 5,
-  },
   button: {
     margin: theme.spacing.unit
   },
@@ -43,36 +37,34 @@ class ServerList extends React.Component {
     this.setState({loading: false, servers});
   }
 
+  openServerDetail = () => {
+
+  }
+
   render() {
     const { classes } = this.props;
     const { loading, servers } = this.state;
 
     return (
       <div>
-        { servers.length > 0 &&
-          <Paper className={classes.root} elevation={1} style={{padding: "0px 10px"}}>
+        { 
+          servers.map(s => {
+          return (
             <List component="nav">
-              {
-                servers.map(a => {
-                  return (
-                <ListItem button key={Math.random()} onClick={()=> this.openAccountDetail(a)}>
-                  <ListItemIcon>
-                    {a.default ? <IconStar className="text-primary" /> : <span className="emptyIcon" />}
-                  </ListItemIcon>
-                  <ListItemText inset primary={a.name} />
-                  <ListItemSecondaryAction className="badge badge-secondary badge-pill">
-                    {Number(a.value) / 1000}
-                  </ListItemSecondaryAction>
-                </ListItem>)
-                })
-              }
-            </List>
-          </Paper>
+              <ListItem button key={Math.random()} onClick={()=> this.openServerDetail(s)}>
+                <ListItemIcon>
+                  {s.default ? <IconStar className="text-primary" /> : <span className="emptyIcon" />}
+                </ListItemIcon>
+                <ListItemText inset primary={s.name ? s.name : s.address} />
+              </ListItem>
+              <Divider />
+            </List>)
+          })
         }
         {
           !loading && servers.length <= 0 && <div className="text-center">
             {/* <img src={img1} alt="" /> */}
-            <h3 className="text-secondary mt-3">Not found your account(s)</h3>
+            <h3 className="text-secondary mt-3">Not found server(s)</h3>
           </div> 
         }
         {

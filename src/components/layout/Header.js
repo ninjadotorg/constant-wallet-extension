@@ -1,15 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { AppBar, SwipeableDrawer, Toolbar, Divider, Typography, ListItem, List, ListItemIcon, ListItemText, MenuItem, Menu  } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
+import { AppBar, IconButton, SwipeableDrawer, Toolbar, Divider, Typography, ListItem, List, ListItemIcon, ListItemText, MenuItem, Menu  } from '@material-ui/core';
 
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import IconInfo from '@material-ui/icons/Info';
 import IconSettings from '@material-ui/icons/Settings';
 import IconFullScreen from '@material-ui/icons/Fullscreen';
-import IconExitToApp from '@material-ui/icons/ExitToApp';
+import { ExitToApp as IconExitToApp, Home as IconHome } from '@material-ui/icons';
 
 const styles = {
   root: {
@@ -69,6 +68,13 @@ class Header extends React.Component {
     const { classes } = this.props;
 
     return (<div className={classes.list}>
+      <List>
+        <ListItem button key="home" onClick={() => this.selectMenu('HOME')}>
+          <ListItemIcon><IconHome /></ListItemIcon>
+          <ListItemText primary="Home" />
+        </ListItem>
+      </List>
+      <Divider />
       <List>
         <ListItem button key="expandView">
           <ListItemIcon><IconFullScreen /></ListItemIcon>

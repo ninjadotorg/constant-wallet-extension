@@ -166,6 +166,9 @@ class AccountSend extends React.Component {
 
       this.setState({amount: 0, toAddress: ''});
     }
+    else{
+      this.showError('Send failed. Please try again!');
+    }
     //{"jsonrpc":"1.0","method":"sendregistration","params":["112t8rnXFybceEiUtWA9zTLVmaPQFzVmWmN9Day5SJKAhUFm1ew6p1dCyQtNAG8bEFom5q4aGiTBpDVWqmuPgs2iivj5vLmuMeq5nYZZNup7",1,-1,1,"/p2p-circuit/ipfs/QmWccFS3pjoGCdfHgP4t2Y4zWx1CRcPgqbzA7ZintfpFZs"],"id":1}
   }
 

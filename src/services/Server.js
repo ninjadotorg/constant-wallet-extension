@@ -13,4 +13,9 @@ export default class Server {
     return false;
   }
 
+  static addNew(data) {
+  
+    local.save(APP.SERVERS, data);
+  }
+
 }
