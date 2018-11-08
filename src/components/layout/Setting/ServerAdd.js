@@ -47,7 +47,7 @@ class ServerAdd extends React.Component {
   }
 
   async componentDidMount(){
-    const servers = await Server.getList();
+    const servers = await Server.get();
     this.setState({servers});
   }
 
@@ -98,7 +98,7 @@ class ServerAdd extends React.Component {
     this.showAlert(msg, {flag: 'danger'});
   }
   
-  saveServer = async () => {
+  saveServer = () => {
     let { name, servers, address, username, password, isDefault } = this.state;
 
     if(!address){
@@ -108,27 +108,22 @@ class ServerAdd extends React.Component {
       return;
     }
 
-    if(!username){
-      this.setState({isAlert: true}, ()=>{
-        this.showWarning('Username is required!');
-      });
-      return;
-    }
-
-    if(!password){
-      this.setState({isAlert: true}, ()=>{
-        this.showWarning('Password is required!');
-      });
-      return;
-    }
-
     if(!servers){
       servers = [];
+      isDefault = true;
+    }
+    else{
+      for(let s of servers){
+        if(s.address == address){
+          this.showWarning('Address is exist!');
+          return;
+        }
+      }
     }
 
     servers.push({address, username, password, name, default: isDefault});
-    Server.addNew(servers);
-    this.showSuccess("Add server success!");
+    Server.set(servers);
+    this.onFinish({message: "Add server success!"})
   }
 
   changeAddress = (e) => {
@@ -176,7 +171,6 @@ class ServerAdd extends React.Component {
         />
 
         <TextField
-          required
           id="Username"
           label="Username"
           className={classes.textField}
@@ -187,7 +181,6 @@ class ServerAdd extends React.Component {
         />
         
         <TextField
-          required
           id="Password"
           label="Password"
           className={classes.textField}

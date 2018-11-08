@@ -1,29 +1,33 @@
 import axios from 'axios';
+import Server from './Server';
 
 export default class Account {
 
   static getOption(method, params){
-    const url = "http://127.0.0.1:9334",
-      username = '', 
-      password = '';
+    const server = Server.getDefault();
 
-    const auth = "Basic " + new Buffer(username+':'+password).toString('base64');
-    const options = {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json;charset=UTF-8',
-        'Authorization': auth
-      },
-      url,
-      data: {
-        "jsonrpc":"1.0",
-        "method": method, 
-        "params": params,
-        "id":1
-      }
-    };
+    if(server){
+      const auth = "Basic " + new Buffer(server.username+':'+server.password).toString('base64');
+      const options = {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json;charset=UTF-8',
+          'Authorization': auth
+        },
+        url: server.address,
+        data: {
+          "jsonrpc":"1.0",
+          "method": method, 
+          "params": params,
+          "id":1
+        }
+      };
 
-    return options;
+      return options;
+    }
+    else{
+      return false;
+    }
   }
 
 

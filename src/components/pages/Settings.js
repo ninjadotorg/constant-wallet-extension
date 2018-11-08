@@ -5,18 +5,23 @@ import { withStyles } from '@material-ui/core/styles';
 import Dialog from '../core/Dialog'
 import ServerList from '../layout/Setting/ServerList';
 import ServerAdd from '../layout/Setting/ServerAdd';
+import Server from '../../services/Server';
 
-import { Tooltip, ListSubheader, List, ListItem, ListItemIcon, ListItemText, Collapse, Button, Snackbar } from '@material-ui/core';
+import { Tooltip, ListSubheader, List, ListItem, 
+  ListItemIcon, ListItemText, ListItemSecondaryAction, 
+  Button, Snackbar } from '@material-ui/core';
 
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import DraftsIcon from '@material-ui/icons/Drafts';
-import SendIcon from '@material-ui/icons/Send';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import StarBorder from '@material-ui/icons/StarBorder';
-import WarningIcon from '@material-ui/icons/Warning';
-import SuccessIcon from '@material-ui/icons/CheckCircle';
-import { Add as IconAdd } from '@material-ui/icons';
+import { 
+  Error as IconError,
+  CheckCircle as IconSuccess,
+  Warning as IconWarning,
+  Add as IconAdd,
+  Language as IconLanguage,
+  Album as IconCurrency,
+  Computer as IconServer,
+  Archive as IconArchive,
+  Ballot as IconPassPhrase
+} from '@material-ui/icons';
 
 const styles = theme => ({
   root: {
@@ -39,8 +44,18 @@ class Settings extends React.Component {
       showAlert: '',
       isAlert: false,
       open: true,
+      server: false,
     }
     
+  }
+
+  componentDidMount(){
+    this.getDefaultServer();
+  }
+
+  getDefaultServer(){
+    let server = Server.getDefault();
+    this.setState({server});
   }
 
   handleClose = (event, reason) => {
@@ -52,11 +67,15 @@ class Settings extends React.Component {
   };
 
 
-  showAlert = (msg, flag='warning') => {
-    let showAlert = '', isAlert = true, icon = <WarningIcon />;
+  showAlert = (msg, {flag='warning', html=false, duration=2000, hideIcon=false}) => {
+    let showAlert = '', isAlert = true, icon = '';
 
     if(flag === 'success')
-      icon = <SuccessIcon />;
+      icon = <IconSuccess />;
+    else if(flag === 'danger')
+      icon = <IconError />;
+      else if(flag === 'warning')
+      icon = <IconWarning />;
 
     this.setState({isAlert}, ()=> {
       showAlert = <Snackbar
@@ -65,35 +84,35 @@ class Settings extends React.Component {
           horizontal: 'center',
         }}
         open={isAlert}
-        autoHideDuration={3000}
+        autoHideDuration={duration}
         onClose={this.handleClose}
       >
-        <div className={"alert alert-"+flag} role="alert">{icon} {msg}</div>
+        <div className={"alert alert-"+flag} role="alert">{!hideIcon && icon} {msg}</div>
       </Snackbar>
 
       this.setState({showAlert});
     });
   }
 
+  showSuccess = (msg) => {
+    this.showAlert(msg, {flag: 'success', duration: 3000, hideIcon: true});
+  }
+
+  showInfo = (msg) => {
+    this.showAlert(msg, {flag: 'info'});
+  }
+
+  showWarning = (msg) => {
+    this.showAlert(msg, {flag: 'warning'});
+  }
+
+  showError = (msg) => {
+    this.showAlert(msg, {flag: 'danger'});
+  }
+
   handleClick = () => {
     this.setState(state => ({ open: !state.open }));
   };
-
-  showSuccess = (msg) => {
-    this.showAlert(msg, 'success');
-  }
-
-  Settings = () => {
-    const { accountName } = this.state;
-    if(!accountName){
-      this.setState({isAlert: true}, ()=>{
-        this.showAlert('Account name is required!');
-      });
-      return;
-    }
-      
-    this.onFinish({message:'Create account is success!'});
-  }
 
   changeAccountName = (e) => {
     this.setState({accountName: e.target.value});
@@ -107,10 +126,21 @@ class Settings extends React.Component {
     }
   }
 
+  closeServerAdd = () => {
+    this.modalServerAddRef.close();
+
+    this.setState({
+      modalAccountDetail: '',
+      modalAccountSend: '',
+    }, ()=> {
+      this.openServerList();
+    });
+  }
+
   openServerAdd = (account) => {
-    //this.modalAccountDetailRef.close();
-    this.setState({//modalAccountDetail: '',
-      modalServerAdd: <ServerAdd  />
+    this.modalServerListRef.close();
+    this.setState({modalServerList: '',
+      modalServerAdd: <ServerAdd onFinish={() => this.closeServerAdd()} />
     });
     this.modalServerAddRef.open();
   }
@@ -137,7 +167,7 @@ class Settings extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { showAlert, modalServerList, modalServerAdd } = this.state;
+    const { showAlert, modalServerList, modalServerAdd, server } = this.state;
 
     return (
       <div className={classes.root}>
@@ -148,36 +178,49 @@ class Settings extends React.Component {
         >
           <ListItem button onClick={() => this.openServerList()}>
             <ListItemIcon>
-              <SendIcon />
+              <IconServer />
             </ListItemIcon>
-            <ListItemText inset primary="RPC Servers" secondary="http://127.0.0.1:9334" />
+            <ListItemText inset primary={!server ? "Not found server" : (server.name ? server.name : "<Unnamed>")} secondary={server.address} />
           </ListItem>
-          <ListItem button>
+        </List>
+        <List
+          component="nav"
+          subheader={<ListSubheader component="div">Preferences</ListSubheader>}
+        >
+
+          <ListItem button onClick={() => this.showInfo("Not finish")}>
             <ListItemIcon>
-              <DraftsIcon />
+              <IconLanguage />
             </ListItemIcon>
-            <ListItemText inset primary="Drafts" />
+            <ListItemText inset primary="Language" secondary="English" />
           </ListItem>
-          <ListItem button onClick={this.handleClick}>
+          <ListItem button onClick={() => this.showInfo("Not finish")}>
             <ListItemIcon>
-              <InboxIcon />
+              <IconCurrency />
             </ListItemIcon>
-            <ListItemText inset primary="Inbox" />
-            {this.state.open ? <ExpandLess /> : <ExpandMore />}
+            <ListItemText inset primary="Currency" secondary="CONSTANT" />
           </ListItem>
-          <Collapse in={this.state.open} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <StarBorder />
-                </ListItemIcon>
-                <ListItemText inset primary="Starred" />
-              </ListItem>
-            </List>
-          </Collapse>
+          
+        </List>
+        <List
+          component="nav"
+          subheader={<ListSubheader component="div">Privacy</ListSubheader>}
+        >
+          <ListItem button onClick={() => this.showInfo("Not finish")}>
+            <ListItemIcon>
+              <IconArchive />
+            </ListItemIcon>
+            <ListItemText inset primary="State Logs" secondary="State logs contain your public account addresses and sent transactions." />
+          </ListItem>
+          <ListItem button onClick={() => this.showInfo("Not finish")}>
+            <ListItemIcon>
+              <IconPassPhrase />
+            </ListItemIcon>
+            <ListItemText inset primary="Seed Phrase" secondary="To access your accounts. Save them somewhere safe and secret." />
+          </ListItem>
         </List>
 
-        <Dialog title="RPC Servers" onRef={modal => this.modalServerListRef = modal} className={{margin: 0}} buttonAction={this.serverButtonAction}>
+        <Dialog title="RPC Servers" onRef={modal => this.modalServerListRef = modal} onClose={() => this.getDefaultServer()} className={{margin: 0}} buttonAction={this.serverButtonAction}>
           {modalServerList}
         </Dialog>
 

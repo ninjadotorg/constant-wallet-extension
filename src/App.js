@@ -7,7 +7,8 @@ import CreateAccount from './components/pages/Account/Create';
 import Settings from './components/pages/Settings';
 import ImportAccount from './components/pages/Account/Import';
 import Snackbar from '@material-ui/core/Snackbar';
-
+import Server from './services/Server';
+import ConfirmDialog from './components/core/ConfirmDialog'
 import { 
   Error as IconError,
   CheckCircle as IconSuccess,
@@ -45,8 +46,20 @@ class App extends Component {
       headerTitle: 'Wallet home',
       showAlert: '',
       isAlert: false,
+      message: ''
     }
     
+  }
+
+  componentDidMount(){
+    const server = Server.getDefault();
+    if(!server){
+      this.modalServerRef.open();
+    }
+  }
+
+  openServerAdd = () => {
+    this.selectAccount('SETTINGS');
   }
 
   handleClose = (event, reason) => {
@@ -78,6 +91,7 @@ class App extends Component {
     this.setState({screen, headerTitle});
   }
   
+
   showAlert = (msg, {flag='warning', html=false, duration=2000, hideIcon=false}) => {
     let showAlert = '', isAlert = true, icon = '';
 
@@ -116,6 +130,7 @@ class App extends Component {
   showError = (msg) => {
     this.showAlert(msg, {flag: 'danger'});
   }
+
   backHome = (data) => {
     this.setState({screen: <Home />, headerTitle: 'Home'});
 
@@ -126,10 +141,14 @@ class App extends Component {
   }
 
   render() {
-    const { screen, headerTitle, showAlert } = this.state;
+    const { screen, headerTitle, showAlert, message } = this.state;
 
     return (
       <div className="App">
+        <ConfirmDialog title="PRC Server" onRef={modal => this.modalServerRef = modal} onOK={()=> this.openServerAdd()} className={{margin: 0}}>
+          <div>You haven't setup default RPC server. Please do it first!</div>
+        </ConfirmDialog>
+
         {showAlert}
         <MuiThemeProvider theme={theme}>
           <Header 

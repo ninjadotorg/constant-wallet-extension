@@ -42,9 +42,13 @@ class Modal extends React.Component {
   }
 
   close(){
+    const { onClose } = this.props;
     if(this.modalRef){
       this.setState({isOpen: false});
     }
+
+    if(onClose)
+      onClose();
   }
 
   render() {

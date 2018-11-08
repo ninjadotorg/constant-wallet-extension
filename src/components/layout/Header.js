@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { AppBar, IconButton, SwipeableDrawer, Toolbar, Divider, Typography, ListItem, List, ListItemIcon, ListItemText, MenuItem, Menu  } from '@material-ui/core';
 
-import MenuIcon from '@material-ui/icons/Menu';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import IconInfo from '@material-ui/icons/Info';
-import IconSettings from '@material-ui/icons/Settings';
-import IconFullScreen from '@material-ui/icons/Fullscreen';
-import { ExitToApp as IconExitToApp, Home as IconHome } from '@material-ui/icons';
+import { AppBar, IconButton, SwipeableDrawer, Toolbar, 
+  Divider, Typography, ListItem, List, Snackbar,
+  ListItemIcon, ListItemText, MenuItem, Menu } from '@material-ui/core';
+
+import { ExitToApp as IconExitToApp, Home as IconHome,
+  Fullscreen as IconFullScreen, Settings as IconSettings,
+  Info as IconInfo, AccountCircle, Menu as MenuIcon, 
+  Error as IconError, CheckCircle as IconSuccess, Warning as IconWarning } from '@material-ui/icons';
 
 const styles = {
   root: {
@@ -30,9 +31,62 @@ class Header extends React.Component {
       auth: true,
       anchorEl: null,
       title: props.title,
-      left: false
+      left: false,
+      showAlert: '',
+      isAlert: false,
     }
     
+  }
+
+  handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    this.setState({ showAlert: '', isAlert: false });
+  }
+
+  showAlert = (msg, {flag='warning', html=false, duration=2000, hideIcon=false}) => {
+    let showAlert = '', isAlert = true, icon = '';
+
+    if(flag === 'success')
+      icon = <IconSuccess />;
+    else if(flag === 'danger')
+      icon = <IconError />;
+      else if(flag === 'warning')
+      icon = <IconWarning />;
+
+    this.setState({isAlert}, ()=> {
+      showAlert = <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        open={isAlert}
+        autoHideDuration={duration}
+        onClose={this.handleClose}
+      >
+        <div className={"alert alert-"+flag} role="alert">{!hideIcon && icon} {msg}</div>
+      </Snackbar>
+
+      this.setState({showAlert});
+    });
+  }
+
+  showSuccess = (msg) => {
+    this.showAlert(msg, {flag: 'success', duration: 3000, hideIcon: true});
+  }
+
+  showWarning = (msg) => {
+    this.showAlert(msg, {flag: 'warning'});
+  }
+
+  showError = (msg) => {
+    this.showAlert(msg, {flag: 'danger'});
+  }
+
+  showInfo = (msg) => {
+    this.showAlert(msg, {flag: 'info', duration: 3000, hideIcon: true});
   }
 
   toggleDrawer = (side, open) => () => {
@@ -76,22 +130,22 @@ class Header extends React.Component {
       </List>
       <Divider />
       <List>
-        <ListItem button key="expandView">
+        <ListItem button key="expandView" onClick={() => this.showInfo('Not finish!')}>
           <ListItemIcon><IconFullScreen /></ListItemIcon>
           <ListItemText primary="Expand View" />
         </ListItem>
-        <ListItem button key="ninjaConstant">
+        <ListItem button key="ninjaConstant" onClick={() => this.showInfo('Not finish!')}>
           <ListItemIcon><IconExitToApp /></ListItemIcon>
           <ListItemText primary="View on Constant Explorer" />
         </ListItem>
       </List>
       <Divider />
       <List>
-        <ListItem button key="info">
+        <ListItem button key="info" onClick={() => this.showInfo('Not finish!')}>
           <ListItemIcon><IconInfo /></ListItemIcon>
           <ListItemText primary="Info & Help" />
         </ListItem>
-        <ListItem button key="settings" onClick={() => this.selectMenu('SETTINGS')}>
+        <ListItem button key="settings" onClick={() => this.selectMenu('SETTINGS')} >
           <ListItemIcon><IconSettings /></ListItemIcon>
           <ListItemText primary="Settings" />
         </ListItem>
@@ -101,11 +155,12 @@ class Header extends React.Component {
   }
   render() {
     const { classes, title } = this.props;
-    const { auth, anchorEl } = this.state;
+    const { auth, anchorEl, showAlert } = this.state;
     const open = Boolean(anchorEl);
 
     return (
       <div className={classes.root}>
+        {showAlert}
         <AppBar position="static">
           <Toolbar>
             <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">

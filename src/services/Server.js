@@ -4,7 +4,7 @@ import {APP} from './constant';
 export default class Server {
 
 
-  static getList() {
+  static get() {
   
     const result = local.get(APP.SERVERS);
     if (result) {
@@ -13,7 +13,21 @@ export default class Server {
     return false;
   }
 
-  static addNew(data) {
+  static getDefault() {
+  
+    const result = local.get(APP.SERVERS);
+    if (result && result.length) {
+      for(let s of result){
+        if(s.default){
+          return s;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  static set(data) {
   
     local.save(APP.SERVERS, data);
   }
