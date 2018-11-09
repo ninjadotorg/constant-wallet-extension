@@ -27,6 +27,10 @@ export default class Server {
     return false;
   }
 
+  static setDefault() {
+    local.save(APP.SERVERS, [{default: true, address: "http://127.0.0.1:9334", username: "", password: "", name: "Local"}]);
+  }
+
   static set(data) {
   
     local.save(APP.SERVERS, data);

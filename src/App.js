@@ -42,7 +42,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      screen: <Home />,
+      screen: '',
       headerTitle: 'Wallet home',
       showAlert: '',
       isAlert: false,
@@ -54,13 +54,17 @@ class App extends Component {
   componentDidMount(){
     const server = Server.getDefault();
     if(!server){
-      this.modalServerRef.open();
+      Server.setDefault();
+      //this.modalServerRef.open();
     }
+
+    this.selectAccount("");
   }
 
-  openServerAdd = () => {
-    this.selectAccount('SETTINGS');
-  }
+  // addServerDefault = () => {
+  //   Server.setDefault();
+  //   this.selectAccount("");
+  // }
 
   handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -145,9 +149,9 @@ class App extends Component {
 
     return (
       <div className="App">
-        <ConfirmDialog title="PRC Server" onRef={modal => this.modalServerRef = modal} onOK={()=> this.openServerAdd()} className={{margin: 0}}>
+        {/* <ConfirmDialog title="PRC Server" onRef={modal => this.modalServerRef = modal} onOK={()=> this.addServerDefault()} className={{margin: 0}}>
           <div>You haven't setup default RPC server. Please do it first!</div>
-        </ConfirmDialog>
+        </ConfirmDialog> */}
 
         {showAlert}
         <MuiThemeProvider theme={theme}>
