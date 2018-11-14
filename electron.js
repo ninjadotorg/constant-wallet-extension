@@ -92,9 +92,7 @@ app.on('window-all-closed', function () {
   if (!downloadFinished) {
     fs.unlinkSync(path.resolve(torePath, 'constant'));
   }
-  if (process.platform != 'darwin') {
-    app.quit();
-  }
+  app.quit();
 });
 
 app.setName('Constant desktop wallet');
