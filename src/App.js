@@ -9,7 +9,7 @@ import ImportAccount from './components/pages/Account/Import';
 import Snackbar from '@material-ui/core/Snackbar';
 import Server from './services/Server';
 import ConfirmDialog from './components/core/ConfirmDialog'
-import { 
+import {
   Error as IconError,
   CheckCircle as IconSuccess,
   Warning as IconWarning,
@@ -48,12 +48,12 @@ class App extends Component {
       isAlert: false,
       message: ''
     }
-    
+
   }
 
-  componentDidMount(){
+  componentDidMount() {
     const server = Server.getDefault();
-    if(!server){
+    if (!server) {
       Server.setDefault();
       //this.modalServerRef.open();
     }
@@ -76,37 +76,37 @@ class App extends Component {
 
   selectAccount = (action) => {
     let screen = '', headerTitle = 'Home';
-    if(action === 'CREATE_ACCOUNT'){
+    if (action === 'CREATE_ACCOUNT') {
       screen = <CreateAccount onFinish={(data) => { this.backHome(data); }} />;
       headerTitle = 'Account';
     }
-    else if(action === 'IMPORT_ACCOUNT'){
+    else if (action === 'IMPORT_ACCOUNT') {
       screen = <ImportAccount onFinish={(data) => { this.backHome(data); }} />;
       headerTitle = 'Account';
     }
-    else if(action === 'SETTINGS'){
+    else if (action === 'SETTINGS') {
       screen = <Settings onFinish={(data) => { this.backHome(data); }} />;
       headerTitle = 'Settings';
     }
-    else{
+    else {
       screen = <Home />;
     }
 
-    this.setState({screen, headerTitle});
+    this.setState({ screen, headerTitle });
   }
-  
 
-  showAlert = (msg, {flag='warning', html=false, duration=2000, hideIcon=false}) => {
+
+  showAlert = (msg, { flag = 'warning', html = false, duration = 2000, hideIcon = false }) => {
     let showAlert = '', isAlert = true, icon = '';
 
-    if(flag === 'success')
+    if (flag === 'success')
       icon = <IconSuccess />;
-    else if(flag === 'danger')
+    else if (flag === 'danger')
       icon = <IconError />;
-      else if(flag === 'warning')
+    else if (flag === 'warning')
       icon = <IconWarning />;
 
-    this.setState({isAlert}, ()=> {
+    this.setState({ isAlert }, () => {
       showAlert = <Snackbar
         anchorOrigin={{
           vertical: 'bottom',
@@ -116,32 +116,32 @@ class App extends Component {
         autoHideDuration={duration}
         onClose={this.handleClose}
       >
-        <div className={"alert alert-"+flag} role="alert">{!hideIcon && icon} {msg}</div>
+        <div className={"alert alert-" + flag} role="alert">{!hideIcon && icon} {msg}</div>
       </Snackbar>
 
-      this.setState({showAlert});
+      this.setState({ showAlert });
     });
   }
 
   showSuccess = (msg) => {
-    this.showAlert(msg, {flag: 'success', duration: 3000, hideIcon: true});
+    this.showAlert(msg, { flag: 'success', duration: 3000, hideIcon: true });
   }
 
   showWarning = (msg) => {
-    this.showAlert(msg, {flag: 'warning'});
+    this.showAlert(msg, { flag: 'warning' });
   }
 
   showError = (msg) => {
-    this.showAlert(msg, {flag: 'danger'});
+    this.showAlert(msg, { flag: 'danger' });
   }
 
   backHome = (data) => {
-    this.setState({screen: <Home />, headerTitle: 'Home'});
+    this.setState({ screen: <Home />, headerTitle: 'Home' });
 
-    if(data && data.message){
+    if (data && data.message) {
       this.showSuccess(data.message);
     }
-      
+
   }
 
   render() {
@@ -155,7 +155,7 @@ class App extends Component {
 
         {showAlert}
         <MuiThemeProvider theme={theme}>
-          <Header 
+          <Header
             callbackSelected={(action) => { this.selectAccount(action) }}
             title={headerTitle}
           />
