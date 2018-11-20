@@ -135,6 +135,13 @@ class AccountSend extends React.Component {
       return;
     }
 
+    if(Number(amount) <= 0){
+      this.setState({isAlert: true}, ()=>{
+        this.showWarning('Amount must be greater than zero!');
+      });
+      return;
+    }
+
     if(Number(amount) > Number(balance)){
       this.setState({isAlert: true}, ()=>{
         this.showWarning('Insufficient this account balance!');

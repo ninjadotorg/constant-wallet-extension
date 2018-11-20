@@ -286,7 +286,7 @@ class AccountDetail extends React.Component {
           </ListItem> 
           <Divider />
 
-          <ListItem>
+          {/* <ListItem>
             <Avatar>
               <IconSecurity />
             </Avatar>
@@ -298,7 +298,7 @@ class AccountDetail extends React.Component {
               </Button>
             </ListItemSecondaryAction>
           </ListItem>
-          <Divider />
+          <Divider /> */}
 
           <ListItem>
             <Avatar>

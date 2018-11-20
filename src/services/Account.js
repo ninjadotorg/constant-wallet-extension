@@ -109,7 +109,7 @@ export default class Account {
   static async sendConstant(param) {
 
     try{
-      const response = await axios(Account.getOption("sendmany", param));
+      const response = await axios(Account.getOption("createandsendtransaction", param));
       if (response.status === 200) {
         if(response.data && response.data.Result)
           return response.data.Result;
