@@ -1,15 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import { Divider, List, ListItemText, ListItemSecondaryAction, ListItem , Avatar, Button, Snackbar} from '@material-ui/core';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
+import {withStyles} from '@material-ui/core/styles';
+import {
+  Divider,
+  List,
+  ListItemText,
+  ListItemSecondaryAction,
+  ListItem,
+  Avatar,
+  Button,
+  Snackbar
+} from '@material-ui/core';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
 import ConfirmDialog from '../../core/ConfirmDialog'
 import Account from '../../../services/Account';
 
-import { 
-  Security as IconSecurity, 
-  VpnKey as IconSealer, 
+import {
+  Security as IconSecurity,
+  VpnKey as IconSealer,
   Error as IconError,
   CheckCircle as IconSuccess,
   Warning as IconWarning,
@@ -48,9 +57,9 @@ class AccountDetail extends React.Component {
     }
   }
 
-  async componentDidMount(){
+  async componentDidMount() {
     const key = await Account.getPaymentAddress(this.state.account.name);
-    if(key){
+    if (key) {
       this.setState({privateKey: key.PrivateKey, paymentAddress: key.PaymentAddress, readonlyKey: key.ReadonlyKey})
     }
 
@@ -58,37 +67,37 @@ class AccountDetail extends React.Component {
     if (result.error) {
       this.showError(result.message);
     }
-    else{
+    else {
       //format mili constant to constant
-      this.setState({balance: Number(result) / 1000});
+      this.setState({balance: Number(result) / 100});
     }
   }
 
   onFinish = (data) => {
-    const { onFinish } = this.props;
-    
+    const {onFinish} = this.props;
+
     if (onFinish) {
       onFinish(data);
     }
   }
 
   doExportSealer = async () => {
-    let { privateKey, sealerKey, paymentAddress } = this.state;
-    if(sealerKey){
+    let {privateKey, sealerKey, paymentAddress} = this.state;
+    if (sealerKey) {
       this.setState({sealerKey: false});
-    } 
-    else{
-      if(!privateKey){
+    }
+    else {
+      if (!privateKey) {
         const result = await Account.getPrivateKey(paymentAddress);
-        if(result && result.PrivateKey){
+        if (result && result.PrivateKey) {
           privateKey = result.PrivateKey;
           this.setState({privateKey: result.PrivateKey});
         }
       }
-        
-      if(privateKey){
+
+      if (privateKey) {
         sealerKey = await Account.getSealerKey(privateKey);
-        if(sealerKey){
+        if (sealerKey) {
           this.setState({sealerKey});
         }
       }
@@ -96,12 +105,12 @@ class AccountDetail extends React.Component {
   }
 
   doExportKey = async () => {
-    let { privateKey, paymentAddress, isExportDumpKey } = this.state;
+    let {privateKey, paymentAddress, isExportDumpKey} = this.state;
     this.setState({isExportDumpKey: !isExportDumpKey});
 
-    if(!privateKey){
+    if (!privateKey) {
       const result = await Account.getPrivateKey(paymentAddress);
-      if(result && result.PrivateKey){
+      if (result && result.PrivateKey) {
         this.setState({privateKey: result.PrivateKey});
       }
     }
@@ -111,8 +120,8 @@ class AccountDetail extends React.Component {
     if (reason === 'clickaway') {
       return;
     }
-    
-    this.setState({ showAlert: '', isAlert: false });
+
+    this.setState({showAlert: '', isAlert: false});
   };
 
   copyToClipBoard = () => {
@@ -123,43 +132,43 @@ class AccountDetail extends React.Component {
     this.modalDeleteAccountRef.open();
   }
   removeAccount = async () => {
-    let { privateKey, paymentAddress, account } = this.state;
+    let {privateKey, paymentAddress, account} = this.state;
 
-    if(!privateKey){
+    if (!privateKey) {
       const result = await Account.getPrivateKey(paymentAddress);
-      if(result && result.PrivateKey){
+      if (result && result.PrivateKey) {
         privateKey = result.PrivateKey;
       }
     }
-    
-    if(privateKey){
+
+    if (privateKey) {
       const result = await Account.removeAccount([privateKey, account.name, '12345678']);
-      if(result){
-        this.onFinish({message:'Account is removed!'});
+      if (result) {
+        this.onFinish({message: 'Account is removed!'});
       }
-      else if(result.error){
+      else if (result.error) {
         this.showError(result.message);
       }
-      else{
+      else {
         this.showError('Remove error!');
       }
     }
-    else{
+    else {
       this.showError('Not found Private Key!');
-    } 
+    }
   }
 
-  showAlert = (msg, flag='warning') => {
-    let showAlert = '', isAlert = true, icon = <IconWarning />;
+  showAlert = (msg, flag = 'warning') => {
+    let showAlert = '', isAlert = true, icon = <IconWarning/>;
 
-    if(flag === 'success')
-      icon = <IconSuccess />;
-    else if(flag === 'danger')
-      icon = <IconError />;
+    if (flag === 'success')
+      icon = <IconSuccess/>;
+    else if (flag === 'danger')
+      icon = <IconError/>;
     else
       icon = '';
 
-    this.setState({isAlert}, ()=> {
+    this.setState({isAlert}, () => {
       showAlert = <Snackbar
         anchorOrigin={{
           vertical: 'bottom',
@@ -169,7 +178,7 @@ class AccountDetail extends React.Component {
         autoHideDuration={2000}
         onClose={this.handleClose}
       >
-        <div className={"alert alert-"+flag} role="alert">{icon} {msg}</div>
+        <div className={"alert alert-" + flag} role="alert">{icon} {msg}</div>
       </Snackbar>
 
       this.setState({showAlert});
@@ -184,18 +193,19 @@ class AccountDetail extends React.Component {
     this.showAlert(msg, 'danger');
   }
 
-  get showDumpKey(){
-    const { privateKey, readonlyKey, isExportDumpKey } = this.state;
+  get showDumpKey() {
+    const {privateKey, readonlyKey, isExportDumpKey} = this.state;
     const classes = this.props.classes;
 
-    if(!isExportDumpKey){
+    if (!isExportDumpKey) {
       return "";
     }
-    else{
+    else {
       return (
         <div className="list-group sealerKey">
           <CopyToClipboard text={readonlyKey} onCopy={() => this.copyToClipBoard()}>
-          <a href="#" className={"list-group-item list-group-item-action flex-column align-items-start " + classes.key}>
+            <a href="#"
+               className={"list-group-item list-group-item-action flex-column align-items-start " + classes.key}>
               <div className="d-flex w-100 justify-content-between">
                 <h5 className="mb-1">Readonly Key</h5>
                 <small className="text-muted">click to Copy</small>
@@ -204,31 +214,33 @@ class AccountDetail extends React.Component {
             </a>
           </CopyToClipboard>
           <CopyToClipboard text={privateKey} onCopy={() => this.copyToClipBoard()}>
-          <a href="#" className={"list-group-item list-group-item-action flex-column align-items-start " + classes.key}>
+            <a href="#"
+               className={"list-group-item list-group-item-action flex-column align-items-start " + classes.key}>
               <div className="d-flex w-100 justify-content-between">
                 <h5 className="mb-1">Private Key</h5>
                 <small className="text-muted">click to Copy</small>
               </div>
               <div className="mb-1 word-wrap-break">{privateKey}</div>
             </a>
-          </CopyToClipboard>        
+          </CopyToClipboard>
         </div>
       );
     }
   }
 
-  get showSealerKey(){
+  get showSealerKey() {
     const sealerKey = this.state.sealerKey;
     const classes = this.props.classes;
 
-    if(!sealerKey){
+    if (!sealerKey) {
       return "";
     }
-    else{
+    else {
       return (
         <div className="list-group sealerKey">
           <CopyToClipboard text={sealerKey.ProducerKeySet} onCopy={() => this.copyToClipBoard()}>
-            <a href="#" className={"list-group-item list-group-item-action flex-column align-items-start " + classes.key}>
+            <a href="#"
+               className={"list-group-item list-group-item-action flex-column align-items-start " + classes.key}>
               <div className="d-flex w-100 justify-content-between">
                 <h5 className="mb-1">Sealer Key Set</h5>
                 <small className="text-muted">click to Copy</small>
@@ -237,23 +249,24 @@ class AccountDetail extends React.Component {
             </a>
           </CopyToClipboard>
           <CopyToClipboard text={sealerKey.ProducerPublicKey} onCopy={() => this.copyToClipBoard()}>
-          <a href="#" className={"list-group-item list-group-item-action flex-column align-items-start " + classes.key}>
+            <a href="#"
+               className={"list-group-item list-group-item-action flex-column align-items-start " + classes.key}>
               <div className="d-flex w-100 justify-content-between">
                 <h5 className="mb-1">Sealer Public Key</h5>
                 <small className="text-muted">click to Copy</small>
               </div>
               <div className="mb-1 word-wrap-break">{sealerKey.ProducerPublicKey}</div>
             </a>
-          </CopyToClipboard>        
+          </CopyToClipboard>
         </div>
       );
     }
   }
 
   render() {
-    const { classes } = this.props;
-    const { account, sealerKey, isExportDumpKey, showAlert, paymentAddress, balance } = this.state
-    
+    const {classes} = this.props;
+    const {account, sealerKey, isExportDumpKey, showAlert, paymentAddress, balance} = this.state
+
     return (
       <div className={classes.root}>
         {showAlert}
@@ -261,30 +274,32 @@ class AccountDetail extends React.Component {
           <ListItem style={{textAlign: 'center', display: 'inline-block'}}>
             <div>
               <h1>{account.name}</h1>
-              <div className="p-2">{paymentAddress && <QRCode value={paymentAddress} size={164} renderAs="svg" fgColor="gray" />}</div>
+              <div className="p-2">{paymentAddress &&
+              <QRCode value={paymentAddress} size={164} renderAs="svg" fgColor="gray"/>}</div>
               <div>
                 <CopyToClipboard text={paymentAddress} onCopy={() => this.copyToClipBoard()}>
-                  <input className="form-control mt-2" id="paymentAddress" defaultValue={paymentAddress} />
+                  <input className="form-control mt-2" id="paymentAddress" defaultValue={paymentAddress}/>
                 </CopyToClipboard>
               </div>
-              <h5 className="pt-3">{ balance ? Math.round(balance).toLocaleString() : 0} CONSTANT</h5>
+              <h5 className="pt-3">{balance ? Math.round(balance).toLocaleString() : 0} CONSTANT</h5>
             </div>
           </ListItem>
-          <Divider />
+          <Divider/>
 
           <ListItem>
             <Avatar>
-              <IconSealer />
+              <IconSealer/>
             </Avatar>
-            <ListItemText disableTypography primary={isExportDumpKey ? "" : "Dump Private Keys"} secondary={this.showDumpKey} />
+            <ListItemText disableTypography primary={isExportDumpKey ? "" : "Dump Private Keys"}
+                          secondary={this.showDumpKey}/>
             <ListItemSecondaryAction>
               <Button variant="contained" size="small" color="default"
-                  onClick={() => this.doExportKey()} >
-                  {isExportDumpKey ? "Hide" : "Export"}
-                </Button>
+                      onClick={() => this.doExportKey()}>
+                {isExportDumpKey ? "Hide" : "Export"}
+              </Button>
             </ListItemSecondaryAction>
-          </ListItem> 
-          <Divider />
+          </ListItem>
+          <Divider/>
 
           {/* <ListItem>
             <Avatar>
@@ -302,12 +317,15 @@ class AccountDetail extends React.Component {
 
           <ListItem>
             <Avatar>
-              <IconRemove />
+              <IconRemove/>
             </Avatar>
-            <ListItemText disableTypography primary={<span className="btn text-danger cursor-pointer pl-0">Remove account</span>} onClick={() => this.confirmRemoveAccount()} />
+            <ListItemText disableTypography
+                          primary={<span className="btn text-danger cursor-pointer pl-0">Remove account</span>}
+                          onClick={() => this.confirmRemoveAccount()}/>
           </ListItem>
         </List>
-        <ConfirmDialog title="Delete Account" onRef={modal => this.modalDeleteAccountRef = modal} onOK={()=> this.removeAccount()} className={{margin: 0}}>
+        <ConfirmDialog title="Delete Account" onRef={modal => this.modalDeleteAccountRef = modal}
+                       onOK={() => this.removeAccount()} className={{margin: 0}}>
           <div>Are you sure to delete?</div>
         </ConfirmDialog>
       </div>

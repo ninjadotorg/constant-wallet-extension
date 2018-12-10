@@ -55,7 +55,7 @@ class AccountCandidate extends React.Component {
         this.showError(result.message);
       }
       else{
-        this.setState({balance: Number(result) / 1000});
+        this.setState({balance: Number(result) / 100});
       }
     }
   }

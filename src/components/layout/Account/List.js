@@ -145,7 +145,7 @@ class AccountList extends React.Component {
                       </ListItemIcon>
                       <ListItemText inset primary={a.name} />
                       <ListItemSecondaryAction className="badge badge-secondary badge-pill">
-                        {Number(a.value) / 1000}
+                        {Number(a.value) / 100}
                       </ListItemSecondaryAction>
                     </ListItem>)
                 })
