@@ -1,0 +1,25 @@
+
+.wrapperTabs {
+    padding: (10px 0);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.wrapperTokenList {
+    .wrapperTokenItem {
+        padding: (10px 0);
+        display: flex;
+        justify-content: space-between;
+    }
+    .wrapperTokenInfo {
+        margin-right: 15px;
+    }
+    .tokenButton {
+        height: 40px;
+        width: 100px;
+    }
+}
+.newTokenButton {
+    height: 40px;
+    width: 200px;
+}
