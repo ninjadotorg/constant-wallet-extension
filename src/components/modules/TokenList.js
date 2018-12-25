@@ -1,25 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from '@material-ui/core';
+import Avatar from '@material-ui/core/Avatar';
 
 class TokenItem extends React.Component {
     static propTypes = {
         item: PropTypes.object.isRequired,
-        onClickToken: PropTypes.func
+        onSendToken: PropTypes.func
     }
     static defaultProps = {
     }
     handleClickButton = () => {
-        const { onClickToken, item } = this.props;
-        onClickToken(item);
+        const { onSendToken, item, tab } = this.props;
+        onSendToken(item, tab);
     }
     render() {
         const { item } = this.props;
-        const { Amount, Name, Symbol, TokenID } = item;
+        const { Amount, Name, Symbol, TokenID, src } = item;
         return (
             <div className="wrapperTokenItem">
                 <div className="wrapperTokenInfo">
                     <div className="tokenId">{TokenID}</div>
+                    {/*<Avatar alt="avatar" src={src} />*/}
                     <div className="tokenName">{Name}</div>
                     <div className="tokenAmount">{Amount}</div>
                 </div>

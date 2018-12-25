@@ -16,8 +16,10 @@ import {
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
 import ConfirmDialog from '../../core/ConfirmDialog'
+import Dialog from '../../core/Dialog'
 import Account from '../../../services/Account';
 import TokenTabs from '../../modules/TokenTabs';
+import CreateToken from '../../layout/Token/CreateToken';
 import {
   Security as IconSecurity,
   VpnKey as IconSealer,
@@ -55,7 +57,8 @@ class AccountDetail extends React.Component {
       showAlert: '',
       balance: 0,
       isAlert: false,
-      isExportDumpKey: false
+      isExportDumpKey: false,
+      modalCreateToken: '',
     }
   }
 
@@ -272,14 +275,69 @@ class AccountDetail extends React.Component {
       );
     }
   }
+  handleSendToken = (item, tab)=> {
+    console.log('Send Token Tab:', tab, 'item:', item.TokenID);
+    const { paymentAddress, balance, privateKey } = this.state;
+    const props = {
+      paymentAddress,
+      privateKey,
+      balance: balance,
+      toAddress: paymentAddress,
+      tokenName: item.Name,
+      tokenId: item.TokenID,
+      tokenSymbol: item.Symbol,
+      type: tab,
+      isCreate: false,
+      onClose:this.handleCloseCreateToken
+
+    }
+    this.setState({
+      modalCreateToken: <CreateToken {...props} />
+    })
+    this.modalTokenCreateRef.open();
+  }
+  handleCreateToken = (tab)=> {
+    console.log('Create New Token Tab:', tab);
+    const { paymentAddress, balance, privateKey } = this.state;
+    const props = {
+      paymentAddress,
+      privateKey,
+      balance: balance,
+      toAddress: paymentAddress,
+      type: tab,
+      isCreate: true,
+      onClose:this.handleCloseCreateToken
+
+    }
+    this.setState({
+      modalCreateToken: <CreateToken {...props} />
+    })
+    this.modalTokenCreateRef.open();
+
+  } 
+  handleCloseCreateToken = ()=> {
+    this.modalTokenCreateRef.close();
+    console.log('Token Tabs Ref:', this.tokenTabsRef);
+    this.tokenTabsRef.onRefresh();
+  }
   renderTokenTabs = () => {
     const { paymentAddress, privateKey } = this.state;
     const props = {
       paymentAddress: paymentAddress,
-      privateKey: privateKey
+      privateKey: privateKey,
+      onSendToken: this.handleSendToken,
+      onCreateToken: this.handleCreateToken,
     }
     return (
-      <TokenTabs {...props}/>
+      <TokenTabs ref={(component) => { this.tokenTabsRef = component; }} {...props}/>
+    );
+  }
+  renderTokenCreate() {
+    const {modalCreateToken} = this.state;
+    return (
+      <Dialog title="Send Token" onRef={modal => this.modalTokenCreateRef = modal} className={{ margin: 0 }}>
+        {modalCreateToken}
+      </Dialog>
     );
   }
 
@@ -349,6 +407,7 @@ class AccountDetail extends React.Component {
                        onOK={() => this.removeAccount()} className={{margin: 0}}>
           <div>Are you sure to delete?</div>
         </ConfirmDialog>
+        {this.renderTokenCreate()}
       </div>
     );
   }

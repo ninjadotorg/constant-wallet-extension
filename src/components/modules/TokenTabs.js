@@ -12,7 +12,6 @@ import { Button } from '@material-ui/core';
 
 import './TokenTabs.scss';
 
-const publicKey = "1Uv3jP4ixNx3BkEtmUUxKXA1TXUduix3KMCWXHvLqVyA9CFfoLRZ949zTBNqDUPSzaPCZPrQKSfiEHguFazK6VeDmEk1RMLfX1kQiSqJ6";
 const styles = theme => ({
     root: {
       flexGrow: 1,
@@ -27,6 +26,7 @@ class TokenTabs extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            showAlert: '',
             value: 0,
             listCustomTokenBalance: [],
             listPrivacyTokenBalance: [],
@@ -36,7 +36,12 @@ class TokenTabs extends React.Component {
         const { value } = this.state;
         this.getTokens(value);
     }
-    componentDidMount() {
+    onRefresh = () => {
+        const { value } = this.state;
+        setTimeout(() => {
+            this.getTokens(value);
+
+        }, 2000);
     }
     handleChange = (event, value) => {
         this.setState({ value });
@@ -52,7 +57,6 @@ class TokenTabs extends React.Component {
         console.log('Result:', results);
         const { ListCustomTokenBalance, PaymentAddress } = results;
         if (ListCustomTokenBalance) {
-            console.log('Token List:', ListCustomTokenBalance);
             this.setState({
                 listCustomTokenBalance: ListCustomTokenBalance
             });
@@ -62,12 +66,10 @@ class TokenTabs extends React.Component {
         const { privateKey } = this.props;
         const params = [];
         params.push(privateKey);
-        console.log('Params:', params);
         const results = await Token.getListPrivacyCustomTokenBalance(params);
         console.log('Result:', results);
         const { ListCustomTokenBalance, PaymentAddress } = results;
         if (ListCustomTokenBalance) {
-            console.log('Token List:', ListCustomTokenBalance);
             this.setState({
                 listPrivacyTokenBalance: ListCustomTokenBalance
             });
@@ -80,9 +82,13 @@ class TokenTabs extends React.Component {
         await this.getPrivacyTokenBalance();
        }   
     }
-    handleClickToken = (token) => {
-
+    handleCreateToken = () => {
+        const { value } = this.state;
+        this.props.onCreateToken(value);
+        
     }
+
+  
     renderNewTokenButton() {
         return (
             <Button 
@@ -90,7 +96,7 @@ class TokenTabs extends React.Component {
                 size="medium" 
                 color="primary" 
                 className="newTokenButton"
-                onClick={this.handleClickButton} >
+                onClick={this.handleCreateToken} >
                 Create New Token
                 </Button>
         );
@@ -99,7 +105,8 @@ class TokenTabs extends React.Component {
         const { value, listCustomTokenBalance, listPrivacyTokenBalance } = this.state;
         const props = {
             list: value === 0 ? listCustomTokenBalance : listPrivacyTokenBalance,
-            onClickToken: this.handleClickToken
+            tab: value,
+            ...this.props
         }
         return(
             <div className={styles.root}>

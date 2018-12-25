@@ -2,7 +2,7 @@ import axios from 'axios';
 import Server from './Server';
 
 export default class Token {
-    static getOption(method, methodName, params) {
+    static getOption(methodName, params) {
         const server = Server.getDefault();
     
         if (server) {
@@ -21,7 +21,6 @@ export default class Token {
               "id": 1
             }
           };
-          console.log('Options:', options);
           return options;
         }
         else {
@@ -30,7 +29,7 @@ export default class Token {
       }
     static async getListCustomTokenBalance(param) {
     
-        const response = await axios(Token.getOption("GET","getlistcustomtokenbalance", param));
+        const response = await axios(Token.getOption("getlistcustomtokenbalance", param));
         if (response.status === 200) {
           if (response.data && response.data.Result)
             return response.data.Result;
@@ -39,11 +38,29 @@ export default class Token {
     }
     static async getListPrivacyCustomTokenBalance(param) {
     
-        const response = await axios(Token.getOption("GET","getlistprivacycustomtokenbalance", param));
+        const response = await axios(Token.getOption("getlistprivacycustomtokenbalance", param));
         if (response.status === 200) {
           if (response.data && response.data.Result)
             return response.data.Result;
         }
         return false;
     }
+    static async createSendPrivacyCustomTokenTransaction(param) {
+    
+      const response = await axios(Token.getOption("createandsendprivacycustomtokentransaction", param));
+      if (response.status === 200) {
+        if (response.data && response.data.Result)
+          return response.data.Result;
+      }
+      return false;
+  }
+    static async createSendCustomTokenBalance(param) {
+      
+      const response = await axios(Token.getOption("createandsendcustomtokentransaction", param));
+      if (response.status === 200) {
+        if (response.data && response.data.Result)
+          return response.data.Result;
+      }
+      return false;
+  }
 }
