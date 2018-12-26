@@ -276,12 +276,11 @@ class AccountDetail extends React.Component {
     }
   }
   handleSendToken = (item, tab)=> {
-    console.log('Send Token Tab:', tab, 'item:', item.TokenID);
     const { paymentAddress, balance, privateKey } = this.state;
     const props = {
       paymentAddress,
       privateKey,
-      balance: balance,
+      balance: item.Amount,
       toAddress: paymentAddress,
       tokenName: item.Name,
       tokenId: item.TokenID,
@@ -297,12 +296,10 @@ class AccountDetail extends React.Component {
     this.modalTokenCreateRef.open();
   }
   handleCreateToken = (tab)=> {
-    console.log('Create New Token Tab:', tab);
-    const { paymentAddress, balance, privateKey } = this.state;
+    const { paymentAddress, privateKey } = this.state;
     const props = {
       paymentAddress,
       privateKey,
-      balance: balance,
       toAddress: paymentAddress,
       type: tab,
       isCreate: true,
@@ -317,7 +314,6 @@ class AccountDetail extends React.Component {
   } 
   handleCloseCreateToken = ()=> {
     this.modalTokenCreateRef.close();
-    console.log('Token Tabs Ref:', this.tokenTabsRef);
     this.tokenTabsRef.onRefresh();
   }
   renderTokenTabs = () => {

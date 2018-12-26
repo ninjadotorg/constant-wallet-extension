@@ -16,7 +16,7 @@ class TokenItem extends React.Component {
     }
     render() {
         const { item } = this.props;
-        const { Amount, Name, Symbol, TokenID, TokenImage } = item;
+        const { Amount, Name, TokenImage } = item;
         return (
             <div className="wrapperTokenItem">
                 <div className="wrapperTokenInfo">
