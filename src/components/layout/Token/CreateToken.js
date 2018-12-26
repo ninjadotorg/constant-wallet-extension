@@ -1,7 +1,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TextField, Button, Snackbar } from '@material-ui/core';
+import { TextField, Button } from '@material-ui/core';
 import ConfirmDialog from '../../core/ConfirmDialog'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -10,11 +10,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import Token from '../../../services/Token';
-import {
-    Error as IconError,
-    CheckCircle as IconSuccess,
-    Warning as IconWarning,
-  } from '@material-ui/icons';
 
 import './CreateToken.scss';
 
@@ -26,7 +21,7 @@ class CreateToken extends React.Component {
     static propTypes = {
         paymentAddress: PropTypes.string.isRequired,
         privateKey: PropTypes.string.isRequired,
-        balance: PropTypes.number.isRequired,
+        balance: PropTypes.number,
         toAddress: PropTypes.string,
         tokenName: PropTypes.string,
         tokenId: PropTypes.string,
@@ -38,7 +33,8 @@ class CreateToken extends React.Component {
     static defaultProps = {
         tokenId: '',
         tokenName: '',
-        tokenSymbol: ''
+        tokenSymbol: '',
+        balance: 0
     }
     constructor(props) {
         super(props);
@@ -51,9 +47,9 @@ class CreateToken extends React.Component {
         }
     }
     validate = ({toAddress, amount, tokenName, tokenSymbol}) => {
-        const { balance } = this.props;
-        
-        if (toAddress.length > 0 && amount > 0 && tokenName.length > 0 && tokenSymbol.length > 0 && amount <= balance) return true;
+        const { balance, isCreate } = this.props;
+        if (!isCreate && amount > balance) return false;
+        if (toAddress.length > 0 && amount > 0 && tokenName.length > 0 && tokenSymbol.length > 0) return true;
         return false;
     }
     handleSubmit = (event) => {
@@ -74,7 +70,6 @@ class CreateToken extends React.Component {
             TokenReceivers: tokenReceiver
         }
         const params = [privateKey, 0, 8, objectSend];
-        console.log('Params:', params);
         this.setState({
             submitParams: params,
             amount
@@ -83,9 +78,9 @@ class CreateToken extends React.Component {
         if(this.validate({toAddress, amount, tokenName, tokenSymbol})){
             this.modalConfirmationRef.open();
         } else {
-            console.log('Validate failed');
+            
             this.setState({
-                error: `Please fill all fields and amount limit in ${balance} constant.`
+                error: isCreate ? `Please fill all fields.` : `Please fill all fields and amount limit in ${balance} token.`
             });
         }
         
@@ -205,15 +200,21 @@ class CreateToken extends React.Component {
             </div>
         );
     }
+    renderBalance() {
+        const { isCreate, balance } = this.props;
+        if(isCreate) return null;
+        return (
+            <div className="text-right">
+            Balance: { balance ? Math.round(balance).toLocaleString() : 0} TOKEN
+            </div>
+        );
+    }
     renderForm() {
-        const { paymentAddress, balance, toAddress } = this.props;
+        const { paymentAddress, toAddress } = this.props;
 
         return (
             <form onSubmit={this.handleSubmit}>
-            <div className="text-right">
-                Balance: { balance ? Math.round(balance).toLocaleString() : 0} CONSTANT
-            </div>
-
+            {this.renderBalance()}
             <TextField
                 required
                 disabled
@@ -262,7 +263,7 @@ class CreateToken extends React.Component {
         const { amount } = this.state;
         return (
             <ConfirmDialog title="Confirmation" onRef={modal => this.modalConfirmationRef = modal} onOK={()=> this.createOrSendToken()}className={{margin: 0}}>
-            <div>Are you sure to transfer out {amount} CONSTANT?</div>
+            <div>Are you sure to transfer out {amount} TOKEN?</div>
             </ConfirmDialog>
         );
     }
@@ -271,7 +272,6 @@ class CreateToken extends React.Component {
             <div className="wrapperCreateToken">
                 {this.renderForm()}
                 {this.renderError()}
-                {/*<div className="badge badge-pill badge-light mt-3">* Only send CONSTANT to an CONSTANT address.</div>*/}
                 {this.renderConfirmDialog()}
                 {this.renderAlert()}
             </div>

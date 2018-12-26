@@ -55,7 +55,7 @@ class TokenTabs extends React.Component {
         params.push(paymentAddress);
         const results = await Token.getListCustomTokenBalance(params);
         console.log('Result:', results);
-        const { ListCustomTokenBalance, PaymentAddress } = results;
+        const { ListCustomTokenBalance } = results;
         if (ListCustomTokenBalance) {
             this.setState({
                 listCustomTokenBalance: ListCustomTokenBalance
@@ -68,7 +68,7 @@ class TokenTabs extends React.Component {
         params.push(privateKey);
         const results = await Token.getListPrivacyCustomTokenBalance(params);
         console.log('Result:', results);
-        const { ListCustomTokenBalance, PaymentAddress } = results;
+        const { ListCustomTokenBalance } = results;
         if (ListCustomTokenBalance) {
             this.setState({
                 listPrivacyTokenBalance: ListCustomTokenBalance
