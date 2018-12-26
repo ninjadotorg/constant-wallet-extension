@@ -109,7 +109,7 @@ class TokenTabs extends React.Component {
             ...this.props
         }
         return(
-            <div className={styles.root}>
+            <div className={styles.root} style={{"width": "88%"}}>
                 <Tabs
                     value={value}
                     indicatorColor="primary"
