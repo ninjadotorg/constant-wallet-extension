@@ -16,12 +16,12 @@ class TokenItem extends React.Component {
     }
     render() {
         const { item } = this.props;
-        const { Amount, Name, Symbol, TokenID, src } = item;
+        const { Amount, Name, Symbol, TokenID, TokenImage } = item;
         return (
             <div className="wrapperTokenItem">
                 <div className="wrapperTokenInfo">
-                    <div className="tokenId">{TokenID}</div>
-                    {/*<Avatar alt="avatar" src={src} />*/}
+                    {/*<div className="tokenId">{TokenID}</div>*/}
+                    <Avatar alt="avatar" src={TokenImage} />
                     <div className="tokenName">{Name}</div>
                     <div className="tokenAmount">{Amount}</div>
                 </div>
