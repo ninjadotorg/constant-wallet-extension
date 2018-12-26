@@ -112,11 +112,11 @@ class AccountList extends React.Component {
     const { classes } = this.props;
 
     return (<div>
-      <Tooltip title="Register Candidate">
+      {/*<Tooltip title="Register Candidate">
         <Button mini variant="fab" color="secondary" className={classes.button} aria-label="Register Candidate" onClick={() => this.openAccountCandidate()}>
           <IconAssignmentInd />
         </Button>
-      </Tooltip>
+    </Tooltip>*/}
       <Tooltip title="Send Coin">
         <Button mini variant="fab" color="secondary" className={classes.button} aria-label="Send Coin" onClick={() => this.openAccountSend()}>
           <IconSend />
