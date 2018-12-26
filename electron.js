@@ -30,24 +30,6 @@ if (fs.existsSync(path.resolve(storePath, 'constant'))) {
 }
 
 function runChain() {
-  try {
-    fs.accessSync(path.resolve(storePath, 'data'), fs.F_OK);
-  } catch (e) {
-    fs.mkdirSync(path.resolve(storePath, 'data'));
-  }
-  try {
-    fs.accessSync(path.resolve(storePath, 'data/node-1'), fs.F_OK);
-  } catch (e) {
-    fs.mkdirSync(path.resolve(storePath, 'data/node-1'));
-  }
-  try {
-    fs.accessSync(path.resolve(storePath, 'data/node-1/testnet'), fs.F_OK);
-  } catch (e) {
-    fs.mkdirSync(path.resolve(storePath, 'data/node-1/testnet'));
-  }
-
-  fs.copyFileSync(path.relative(__dirname, 'wallet'), path.resolve(storePath, 'data/node-1/testnet/wallet'));
-
   exec(`${path.resolve(storePath, 'constant')} --enablewallet --wallet "wallet" --walletpassphrase "12345678" --testnet --norpcauth`, (error, stdout, stderr) => {
     if (error) {
       runChain();
