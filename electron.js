@@ -30,7 +30,7 @@ if (fs.existsSync(path.resolve(storePath, 'constant'))) {
 }
 
 function runChain() {
-  exec(`${path.resolve(storePath, 'constant')} --enablewallet --wallet "wallet" --walletpassphrase "12345678" --testnet --norpcauth`, (error, stdout, stderr) => {
+  exec(`${path.resolve(storePath, 'constant')} --enablewallet --wallet "wallet" --walletpassphrase "12345678" --testnet --norpcauth --light`, (error, stdout, stderr) => {
     if (error) {
       runChain();
     }
