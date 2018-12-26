@@ -34,7 +34,8 @@ class CreateToken extends React.Component {
         tokenId: '',
         tokenName: '',
         tokenSymbol: '',
-        balance: 0
+        balance: 0,
+        toAddress: ''
     }
     constructor(props) {
         super(props);
@@ -237,7 +238,7 @@ class CreateToken extends React.Component {
                 inputRef={toAddressFocus}
                 margin="normal"
                 variant="outlined"
-                value={toAddress}
+                defaultValue={toAddress}
                 />
                 
                 {this.renderTokenName()}

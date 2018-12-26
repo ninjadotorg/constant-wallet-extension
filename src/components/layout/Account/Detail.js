@@ -281,7 +281,6 @@ class AccountDetail extends React.Component {
       paymentAddress,
       privateKey,
       balance: item.Amount,
-      toAddress: paymentAddress,
       tokenName: item.Name,
       tokenId: item.TokenID,
       tokenSymbol: item.Symbol,
