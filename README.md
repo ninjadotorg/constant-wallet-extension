@@ -31,9 +31,9 @@ You can use Chrome to add it as an extension app with dev mode
 After run
 ##### `npm run build`
 continue with command line
-#### `npm run electron-only`
+##### `npm run electron-only`
 or you can run with only one command line
-### `npm run electron-dev`
+##### `npm run electron-dev`
 
 ## Learn More
 
