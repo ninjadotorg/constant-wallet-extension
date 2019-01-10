@@ -70,7 +70,7 @@ class CreateToken extends React.Component {
             TokenAmount: amount,
             TokenReceivers: tokenReceiver
         }
-        const params = [privateKey, 0, 8, objectSend];
+        const params = [privateKey, 0, -1, objectSend];
         this.setState({
             submitParams: params,
             amount
