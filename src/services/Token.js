@@ -46,7 +46,7 @@ export default class Token {
         return false;
     }
     static async createSendPrivacyCustomTokenTransaction(param) {
-    
+      param.splice(1, 0, null)
       const response = await axios(Token.getOption("createandsendprivacycustomtokentransaction", param));
       if (response.status === 200) {
         if (response.data && response.data.Result)
