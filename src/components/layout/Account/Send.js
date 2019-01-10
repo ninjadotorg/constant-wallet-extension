@@ -163,7 +163,7 @@ class AccountSend extends React.Component {
       }
     }
 
-    const result = await Account.sendConstant([privateKey, { [toAddress]: Number(amount) }, -1, 1 ]);console.log(result);
+    const result = await Account.sendConstant([privateKey, { [toAddress]: Number(amount) * 100 }, -1, 1 ]);console.log(result);
     if(result){
       this.showSuccess(
       <div className="word-break-all">
