@@ -61,7 +61,7 @@ class CreateToken extends React.Component {
         const tokenName = event.target.tokenName.value || '';
         const tokenSymbol = event.target.tokenSymbol.value || '';
         const tokenReceiver = {};
-        tokenReceiver[toAddress]= amount * 100;
+        tokenReceiver[toAddress]= amount;
         const objectSend = {
             TokenID: tokenId || '',
             TokenName: tokenName,
