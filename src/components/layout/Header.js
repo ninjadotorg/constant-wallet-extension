@@ -11,6 +11,9 @@ import { ExitToApp as IconExitToApp, Home as IconHome,
   Info as IconInfo, AccountCircle, Menu as MenuIcon, 
   Error as IconError, CheckCircle as IconSuccess, Warning as IconWarning } from '@material-ui/icons';
 
+
+import AccountList from '../layout/Account/List'
+
 const styles = {
   root: {
     flexGrow: 1,
@@ -153,6 +156,36 @@ class Header extends React.Component {
     </div>
     );
   }
+  renderAccountList = () => {
+    return (
+      <AccountList />
+
+    );
+  }
+  renderMenu = () => {
+    const { anchorEl } = this.state;
+    const open = Boolean(anchorEl);
+    return (
+      <Menu
+      id="menu-appbar"
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open={open}
+      onClose={this.handleClose}
+    >
+      {this.renderAccountList()}
+      <MenuItem onClick={() => this.selectMenu('CREATE_ACCOUNT')}>Create Account</MenuItem>
+      <MenuItem onClick={() => this.selectMenu('IMPORT_ACCOUNT')}>Import Account</MenuItem>
+    </Menu>
+    );
+  }
   render() {
     const { classes, title } = this.props;
     const { auth, anchorEl, showAlert } = this.state;
@@ -179,23 +212,7 @@ class Header extends React.Component {
                 >
                   <AccountCircle />
                 </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={open}
-                  onClose={this.handleClose}
-                >
-                  <MenuItem onClick={() => this.selectMenu('CREATE_ACCOUNT')}>Create Account</MenuItem>
-                  <MenuItem onClick={() => this.selectMenu('IMPORT_ACCOUNT')}>Import Account</MenuItem>
-                </Menu>
+                {this.renderMenu()}
               </div>
             )}
           </Toolbar>

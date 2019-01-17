@@ -10,7 +10,7 @@ import { Star as IconStar, Send as IconSend, AssignmentInd as IconAssignmentInd 
 import Dialog from '../../core/Dialog'
 import img1 from '../../../assets/images/img1.png'
 import Account from '../../../services/Account';
-
+import './List.scss';
 const styles = theme => ({
   root: {
     width: '100%',
@@ -129,30 +129,29 @@ class AccountList extends React.Component {
   render() {
     const { classes } = this.props;
     const { walletName, loading, accountList, modalAccountDetail, modalAccountSend, modalAccountCandidate } = this.state;
-
+    if (accountList.length === 0) return null;
     return (
-      <div>
-        {accountList.length > 0 &&
-          <Paper className={classes.root} elevation={1} style={{ padding: "0px 10px" }}>
-            <div className="walletName">{walletName}</div>
+      <div className="wrapperAccountList">
+            {/*<div className="walletName">{walletName}</div>*/}
             <List component="nav">
               {
                 accountList.map(a => {
                   return (
                     <ListItem button key={Math.random()} onClick={() => this.openAccountDetail(a)}>
                       <ListItemIcon>
-                        {a.default ? <IconStar className="text-primary" /> : <span className="emptyIcon" />}
+                        {a.default ? <div className="defaultDot" /> : <span className="emptyIcon" />}
                       </ListItemIcon>
-                      <ListItemText inset primary={a.name} />
-                      <ListItemSecondaryAction className="badge badge-secondary badge-pill">
-                        {Number(a.value) / 100}
+                      <div className="accountName">{a.name}</div>
+                      <ListItemSecondaryAction>
+                        <div className="accountAmount">
+                        { Number(a.value) / 100}
+                        </div>
                       </ListItemSecondaryAction>
                     </ListItem>)
                 })
               }
             </List>
-          </Paper>
-        }
+            <div className="line"/>
         {
           !loading && accountList.length <= 0 && <div className="text-center">
             <img src={img1} alt="" />
