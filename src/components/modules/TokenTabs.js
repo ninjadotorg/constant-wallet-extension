@@ -94,13 +94,13 @@ class TokenTabs extends React.Component {
             <Button 
                 variant="contained" 
                 size="medium" 
-                color="primary" 
                 className="newTokenButton"
                 onClick={this.handleCreateToken} >
                 Create New Token
                 </Button>
         );
     }
+    
     renderTabs() {
         const { value, listCustomTokenBalance, listPrivacyTokenBalance } = this.state;
         const props = {
@@ -113,9 +113,10 @@ class TokenTabs extends React.Component {
                 <Tabs
                     value={value}
                     indicatorColor="primary"
-                    textColor="primary"
+                    textColor="black"
                     fullWidth
                     onChange={this.handleChange}
+                    className="tokenTabs"
                     >
                     <Tab label="Custom" />
                     <Tab label="Privacy" />
