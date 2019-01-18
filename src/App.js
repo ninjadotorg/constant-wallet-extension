@@ -9,6 +9,10 @@ import ImportAccount from './components/pages/Account/Import';
 import Snackbar from '@material-ui/core/Snackbar';
 import Server from './services/Server';
 import ConfirmDialog from './components/core/ConfirmDialog'
+
+import Account from './services/Account';
+
+
 import {
   Error as IconError,
   CheckCircle as IconSuccess,
@@ -46,7 +50,8 @@ class App extends Component {
       headerTitle: 'Wallet home',
       showAlert: '',
       isAlert: false,
-      message: ''
+      message: '',
+      selectedAccount: {},
     }
 
   }
@@ -57,14 +62,39 @@ class App extends Component {
       Server.setDefault();
       //this.modalServerRef.open();
     }
+    this.getAccountList();
 
-    this.selectAccount("");
+    //this.selectAccount("");
   }
 
   // addServerDefault = () => {
   //   Server.setDefault();
   //   this.selectAccount("");
   // }
+
+
+  async getAccountList() {
+    this.setState({ loading: true, accountList: [] });
+    const result = await Account.getAccountList([]);
+    if (result) {
+      const accounts = result.Accounts, walletName = result.WalletName;
+      let accountList = [];
+
+      Object.keys(accounts).forEach(a => {
+        accountList.push({ default: false, name: a, value: accounts[a] });
+      });
+      let selectedAccount = {};
+      if (accountList.length > 0){
+        accountList[0].default = true;
+        selectedAccount = accountList[0];
+      }
+
+      this.setState({ walletName, loading: false, selectedAccount});
+      this.selectAccount("");
+    } else {
+      setTimeout(() => { this.getAccountList() }, 1000);
+    }
+  }
 
   handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -75,6 +105,7 @@ class App extends Component {
   };
 
   selectAccount = (action) => {
+    const { selectedAccount } = this.state;
     let screen = '', headerTitle = 'Home';
     if (action === 'CREATE_ACCOUNT') {
       screen = <CreateAccount onFinish={(data) => { this.backHome(data); }} />;
@@ -89,7 +120,8 @@ class App extends Component {
       headerTitle = 'Settings';
     }
     else {
-      screen = <Home />;
+      //Get Account default
+      screen = <Home account={selectedAccount}/>;
     }
 
     this.setState({ screen, headerTitle });
