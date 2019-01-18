@@ -125,6 +125,9 @@ class AccountList extends React.Component {
     </div>
     );
   }
+  formatAmount = (amount)=> {
+    return (Number(amount) / 100).toLocaleString({maximumFractionDigits: 2});
+  }
 
   render() {
     const { classes } = this.props;
@@ -142,9 +145,9 @@ class AccountList extends React.Component {
                         {a.default ? <div className="defaultDot" /> : <span className="emptyIcon" />}
                       </ListItemIcon>
                       <div className="accountName">{a.name}</div>
-                      <ListItemSecondaryAction>
+                      <ListItemSecondaryAction style={{marginRight: '10px'}}>
                         <div className="accountAmount">
-                        { Number(a.value) / 100}
+                        { this.formatAmount(a.value)}
                         </div>
                       </ListItemSecondaryAction>
                     </ListItem>)

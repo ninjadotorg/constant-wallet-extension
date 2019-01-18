@@ -11,6 +11,10 @@ import { ExitToApp as IconExitToApp, Home as IconHome,
   Info as IconInfo, AccountCircle, Menu as MenuIcon, 
   Error as IconError, CheckCircle as IconSuccess, Warning as IconWarning } from '@material-ui/icons';
 
+import Icon from '../../components/core/Icon';
+import CreateAccountSVG from '../../assets/images/create-account.svg';
+import ImportAccountSVG from '../../assets/images/import-account.svg';
+import './Header.scss';
 
 import AccountList from '../layout/Account/List'
 
@@ -181,8 +185,18 @@ class Header extends React.Component {
       onClose={this.handleClose}
     >
       {this.renderAccountList()}
-      <MenuItem onClick={() => this.selectMenu('CREATE_ACCOUNT')}>Create Account</MenuItem>
-      <MenuItem onClick={() => this.selectMenu('IMPORT_ACCOUNT')}>Import Account</MenuItem>
+      <MenuItem onClick={() => this.selectMenu('CREATE_ACCOUNT')}>
+        <ListItemIcon style={{marginLeft: '10px'}}>
+          <Icon path={CreateAccountSVG} className="CreateAccountSVG" />
+        </ListItemIcon>
+      Create Account
+      </MenuItem>
+      <MenuItem onClick={() => this.selectMenu('IMPORT_ACCOUNT')}>
+        <ListItemIcon style={{marginLeft: '10px'}}>
+          <Icon path={ImportAccountSVG} className="ImportAccountSVG" />
+        </ListItemIcon>
+      Import Account
+      </MenuItem>
     </Menu>
     );
   }
