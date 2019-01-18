@@ -52,6 +52,7 @@ class App extends Component {
       isAlert: false,
       message: '',
       selectedAccount: {},
+      accounts: [],
     }
 
   }
@@ -89,7 +90,7 @@ class App extends Component {
         selectedAccount = accountList[0];
       }
 
-      this.setState({ walletName, loading: false, selectedAccount});
+      this.setState({ walletName, loading: false, selectedAccount, accounts: accountList});
       this.selectAccount("");
     } else {
       setTimeout(() => { this.getAccountList() }, 1000);
@@ -177,7 +178,7 @@ class App extends Component {
   }
 
   render() {
-    const { screen, headerTitle, showAlert, message } = this.state;
+    const { screen, headerTitle, showAlert, message, accounts, selectedAccount } = this.state;
 
     return (
       <div className="App">
@@ -190,6 +191,8 @@ class App extends Component {
           <Header
             callbackSelected={(action) => { this.selectAccount(action) }}
             title={headerTitle}
+            accounts={accounts}
+            selectedAccount={selectedAccount}
           />
           <div className="appContainer">
             {screen}

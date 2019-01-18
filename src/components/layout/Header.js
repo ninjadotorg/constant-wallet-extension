@@ -32,6 +32,10 @@ const styles = {
 };
 
 class Header extends React.Component {
+  static propTypes = {
+    accounts: PropTypes.array.isRequired,
+    selectedAccount: PropTypes.object.isRequired
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -161,8 +165,9 @@ class Header extends React.Component {
     );
   }
   renderAccountList = () => {
+    const { accounts } = this.props;
     return (
-      <AccountList />
+      <AccountList accounts={accounts} />
 
     );
   }
@@ -200,8 +205,15 @@ class Header extends React.Component {
     </Menu>
     );
   }
+  renderSelectedAccount = (selectedAccount) => {
+    const { name, value } = selectedAccount;
+    if (name === undefined && value === undefined) return null; 
+    return (
+      <div className="selectedAccount"><span className="selectedAccountName">{selectedAccount.name}</span> ({(Number(selectedAccount.value) / 100).toLocaleString({maximumFractionDigits: 2})}) Constant </div>
+    );
+  }
   render() {
-    const { classes, title } = this.props;
+    const { classes, title, selectedAccount } = this.props;
     const { auth, anchorEl, showAlert } = this.state;
     const open = Boolean(anchorEl);
 
@@ -224,6 +236,7 @@ class Header extends React.Component {
                   onClick={this.handleMenu}
                   color="inherit"
                 >
+                  { this.renderSelectedAccount(selectedAccount) }
                   <AccountCircle />
                 </IconButton>
                 {this.renderMenu()}

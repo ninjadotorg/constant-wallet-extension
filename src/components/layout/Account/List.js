@@ -29,6 +29,12 @@ const styles = theme => ({
 });
 
 class AccountList extends React.Component {
+
+  static propTypes = {
+    accounts: PropTypes.array.isRequired
+    
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -43,28 +49,30 @@ class AccountList extends React.Component {
   }
 
   componentDidMount() {
-    this.getAccountList();
+    //this.getAccountList();
+    const { accounts } = this.props;
+    this.setState({ accountList: accounts });
   }
 
-  async getAccountList() {
-    this.setState({ loading: true, accountList: [] });
-    const result = await Account.getAccountList([]);
-    if (result) {
-      const accounts = result.Accounts, walletName = result.WalletName;
-      let accountList = [];
+  // async getAccountList() {
+  //   this.setState({ loading: true, accountList: [] });
+  //   const result = await Account.getAccountList([]);
+  //   if (result) {
+  //     const accounts = result.Accounts, walletName = result.WalletName;
+  //     let accountList = [];
 
-      Object.keys(accounts).forEach(a => {
-        accountList.push({ default: false, name: a, value: accounts[a] });
-      });
+  //     Object.keys(accounts).forEach(a => {
+  //       accountList.push({ default: false, name: a, value: accounts[a] });
+  //     });
 
-      if (accountList.length > 0)
-        accountList[0].default = true;
+  //     if (accountList.length > 0)
+  //       accountList[0].default = true;
 
-      this.setState({ walletName, accountList, loading: false });
-    } else {
-      setTimeout(() => { this.getAccountList() }, 1000);
-    }
-  }
+  //     this.setState({ walletName, accountList, loading: false });
+  //   } else {
+  //     setTimeout(() => { this.getAccountList() }, 1000);
+  //   }
+  // }
 
   reload = () => {
     this.modalAccountDetailRef.close();
