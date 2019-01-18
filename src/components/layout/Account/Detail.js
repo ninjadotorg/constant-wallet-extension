@@ -29,6 +29,8 @@ import {
   Remove as IconRemove
 } from '@material-ui/icons';
 
+import './Detail.scss';
+
 const styles = theme => ({
   root: {
     width: '100%',
@@ -336,6 +338,29 @@ class AccountDetail extends React.Component {
     );
   }
 
+  renderAccountInfo = () => {
+    const {classes} = this.props;
+    const {account, sealerKey, isExportDumpKey, showAlert, paymentAddress, balance} = this.state
+
+    return (
+      <ListItem style={{textAlign: 'center', display: 'inline-block', backgroundColor: '#2D4CF5'}}>
+      <div className="wrapperAccountInfo">
+          {<h1>{account.name}</h1>}
+          <div className="wrapperQRCode">
+          {paymentAddress &&
+            <QRCode className="qrCode" value={paymentAddress} size={164} renderAs="svg" fgColor="black"/>}</div>
+          <div>
+            <CopyToClipboard text={paymentAddress} onCopy={() => this.copyToClipBoard()}>
+              <input className="form-control mt-2" id="paymentAddress" defaultValue={paymentAddress}/>
+            </CopyToClipboard>
+          </div>
+          <div className="balance">{balance ? Math.round(balance).toLocaleString() : 0} CONSTANT</div>
+        </div>
+      </ListItem>
+
+    );
+  }
+
   render() {
     const {classes} = this.props;
     const {account, sealerKey, isExportDumpKey, showAlert, paymentAddress, balance} = this.state
@@ -344,19 +369,7 @@ class AccountDetail extends React.Component {
       <div className={classes.root}>
         {showAlert}
         <List>
-          <ListItem style={{textAlign: 'center', display: 'inline-block'}}>
-            <div>
-              <h1>{account.name}</h1>
-              <div className="p-2">{paymentAddress &&
-              <QRCode value={paymentAddress} size={164} renderAs="svg" fgColor="gray"/>}</div>
-              <div>
-                <CopyToClipboard text={paymentAddress} onCopy={() => this.copyToClipBoard()}>
-                  <input className="form-control mt-2" id="paymentAddress" defaultValue={paymentAddress}/>
-                </CopyToClipboard>
-              </div>
-              <h5 className="pt-3">{balance ? Math.round(balance).toLocaleString() : 0} CONSTANT</h5>
-            </div>
-          </ListItem>
+          {this.renderAccountInfo()}
           <Divider/>
 
           <ListItem>

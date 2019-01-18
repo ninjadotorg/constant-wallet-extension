@@ -28,8 +28,8 @@ h1, h2, h3 { font-weight: 400; }
   background: url(assets/images/bg.png) no-repeat center center;
 }
 
-.container{
-  margin-top: 1rem;
+.appContainer{
+  /*margin-top: 1rem;*/
 }
 
 .walletName{

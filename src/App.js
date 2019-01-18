@@ -191,7 +191,7 @@ class App extends Component {
             callbackSelected={(action) => { this.selectAccount(action) }}
             title={headerTitle}
           />
-          <div className="container">
+          <div className="appContainer">
             {screen}
           </div>
         </MuiThemeProvider>
