@@ -64,7 +64,18 @@ class AccountDetail extends React.Component {
     }
   }
 
-  async componentDidMount() {
+  componentDidMount() {
+    this.getData();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {account} = nextProps;
+    this.setState( { account});
+    console.log('Account:', account);
+    this.getData();
+  }
+
+  async getData() {
     const key = await Account.getPaymentAddress(this.state.account.name);
     if (key) {
       this.setState({privateKey: key.PrivateKey, paymentAddress: key.PaymentAddress, readonlyKey: key.ReadonlyKey})
@@ -283,6 +294,7 @@ class AccountDetail extends React.Component {
       readonlyKey,
       onSendToken: this.handleSendToken,
       onCreateToken: this.handleCreateToken,
+      
     }
     return (
       <MainTabs {...props}/>

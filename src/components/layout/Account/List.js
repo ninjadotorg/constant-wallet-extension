@@ -31,8 +31,8 @@ const styles = theme => ({
 class AccountList extends React.Component {
 
   static propTypes = {
-    accounts: PropTypes.array.isRequired
-    
+    accounts: PropTypes.array.isRequired,
+    onChangeAccount: PropTypes.func
   }
 
   constructor(props) {
@@ -85,12 +85,13 @@ class AccountList extends React.Component {
     });
   }
 
-  openAccountDetail = (account) => {
-    this.modalAccountDetailRef.open();
-    this.setState({
-      accountSelected: account,
-      modalAccountDetail: <AccountDetail account={account} onFinish={() => this.reload()} />
-    });
+  chooseAccount = (account) => {
+    //this.modalAccountDetailRef.open();
+    // this.setState({
+    //   accountSelected: account,
+    //   modalAccountDetail: <AccountDetail account={account} onFinish={() => this.reload()} />
+    // });
+    this.props.onChangeAccount(account);
   }
 
   openAccountSend = (account) => {
@@ -148,7 +149,7 @@ class AccountList extends React.Component {
               {
                 accountList.map(a => {
                   return (
-                    <ListItem button key={Math.random()} onClick={() => this.openAccountDetail(a)}>
+                    <ListItem button key={Math.random()} onClick={() => this.chooseAccount(a)}>
                       <ListItemIcon>
                         {a.default ? <div className="defaultDot" /> : <span className="emptyIcon" />}
                       </ListItemIcon>

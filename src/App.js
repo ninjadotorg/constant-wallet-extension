@@ -65,7 +65,7 @@ class App extends Component {
     }
     this.getAccountList();
 
-    //this.selectAccount("");
+    this.selectAccount("");
   }
 
   // addServerDefault = () => {
@@ -105,8 +105,10 @@ class App extends Component {
     this.setState({ showAlert: '', isAlert: false });
   };
 
+  
   selectAccount = (action) => {
     const { selectedAccount } = this.state;
+    
     let screen = '', headerTitle = 'Home';
     if (action === 'CREATE_ACCOUNT') {
       screen = <CreateAccount onFinish={(data) => { this.backHome(data); }} />;
@@ -122,10 +124,12 @@ class App extends Component {
     }
     else {
       //Get Account default
+      console.log("Home Selected Account:", selectedAccount);
       screen = <Home account={selectedAccount}/>;
     }
 
     this.setState({ screen, headerTitle });
+    
   }
 
 
@@ -176,6 +180,12 @@ class App extends Component {
     }
 
   }
+  handleChangeAccount = (account) => {
+    console.log('Account Change:', account);
+    this.setState({ selectedAccount: account }, ()=> {
+      this.selectAccount("");
+    });
+  }
 
   render() {
     const { screen, headerTitle, showAlert, message, accounts, selectedAccount } = this.state;
@@ -193,6 +203,7 @@ class App extends Component {
             title={headerTitle}
             accounts={accounts}
             selectedAccount={selectedAccount}
+            onChangeAccount={this.handleChangeAccount}
           />
           <div className="appContainer">
             {screen}

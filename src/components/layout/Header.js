@@ -34,7 +34,8 @@ const styles = {
 class Header extends React.Component {
   static propTypes = {
     accounts: PropTypes.array.isRequired,
-    selectedAccount: PropTypes.object.isRequired
+    selectedAccount: PropTypes.object.isRequired,
+    onChangeAccount: PropTypes.func,
   }
   constructor(props) {
     super(props);
@@ -128,6 +129,10 @@ class Header extends React.Component {
     });
     
   }
+  handleChangeAccount = (account) => {
+    this.setState({ anchorEl: null});
+    this.props.onChangeAccount(account);
+  }
 
   get sideList(){
     const { classes } = this.props;
@@ -167,7 +172,9 @@ class Header extends React.Component {
   renderAccountList = () => {
     const { accounts } = this.props;
     return (
-      <AccountList accounts={accounts} />
+      <AccountList accounts={accounts} 
+        onChangeAccount={this.handleChangeAccount}
+      />
 
     );
   }

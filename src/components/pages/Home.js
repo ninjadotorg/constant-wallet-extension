@@ -14,6 +14,9 @@ class Home extends React.Component {
     }
     
   }
+  componentWillReceiveProps(nextProps) {
+    console.log("Home Next Props:", nextProps.account);
+  }
 
   render() {
     const { account } = this.props;
