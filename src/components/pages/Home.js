@@ -23,8 +23,6 @@ class Home extends React.Component {
     console.log('Home Account:', account);
     return (
       <div className="">
-        {/* <h1>Home</h1> */}
-        {/*<AccountList />*/}
         {<AccountDetail account={account} onFinish={() => this.reload()} />}
       </div>
     );

@@ -1,17 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-    
-    Tabs,
-    Tab,
-    Divider,
-    List,
+
     ListItemText,
-    ListItemSecondaryAction,
     ListItem,
     Avatar,
-    Button,
-    Snackbar,
+ 
   } from '@material-ui/core';
 
 import {
@@ -31,6 +25,7 @@ class PrivacyKeys extends React.Component {
     static propTypes = {
         paymentAddress: PropTypes.string.isRequired,
         readonlyKey: PropTypes.string.isRequired,
+        onRemoveAccount: PropTypes.func,
     }
     constructor(props) {
         super(props);
@@ -94,35 +89,10 @@ class PrivacyKeys extends React.Component {
         }
       }
 
-    confirmRemoveAccount = () => {
-    this.modalDeleteAccountRef.open();
+    handleOnRemoveAccount = () => {
+        this.props.onRemoveAccount();
     }
-    removeAccount = async () => {
-    let {privateKey, paymentAddress, account} = this.state;
-
-    if (!privateKey) {
-        const result = await Account.getPrivateKey(paymentAddress);
-        if (result && result.PrivateKey) {
-        privateKey = result.PrivateKey;
-        }
-    }
-
-    if (privateKey) {
-        const result = await Account.removeAccount([privateKey, account.name, '12345678']);
-        if (result) {
-        this.onFinish({message: 'Account is removed!'});
-        }
-        else if (result.error) {
-        this.showError(result.message);
-        }
-        else {
-        this.showError('Remove error!');
-        }
-    }
-    else {
-        this.showError('Not found Private Key!');
-    }
-    }
+    
 
     renderReadonlyKey = () => {
         const { readonlyKey } = this.props;
@@ -145,7 +115,14 @@ class PrivacyKeys extends React.Component {
     }
     renderRemoveAccount = () => {
         return (
-            <div />
+            <ListItem>
+            <Avatar>
+              <IconRemove/>
+            </Avatar>
+            <ListItemText disableTypography
+                          primary={<span className="btn text-danger cursor-pointer pl-0">Remove account</span>}
+                          onClick={this.handleOnRemoveAccount}/>
+            </ListItem>
         );
     }
 
@@ -156,15 +133,6 @@ class PrivacyKeys extends React.Component {
                 {this.renderReadonlyKey()}
                 {this.renderPrivacyKey()}
                 {this.renderRemoveAccount()}
-
-          <ListItem>
-            <Avatar>
-              <IconRemove/>
-            </Avatar>
-            <ListItemText disableTypography
-                          primary={<span className="btn text-danger cursor-pointer pl-0">Remove account</span>}
-                          onClick={() => this.confirmRemoveAccount()}/>
-          </ListItem>
           </div>
         );
     }

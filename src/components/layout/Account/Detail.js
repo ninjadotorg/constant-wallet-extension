@@ -4,14 +4,8 @@ import {withStyles} from '@material-ui/core/styles';
 import {
   Divider,
   List,
-  ListItemText,
-  ListItemSecondaryAction,
   ListItem,
-  Avatar,
-  Button,
   Snackbar,
-  Tabs,
-  Tab
 } from '@material-ui/core';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
@@ -71,7 +65,6 @@ class AccountDetail extends React.Component {
   componentWillReceiveProps(nextProps) {
     const {account} = nextProps;
     this.setState( { account});
-    console.log('Account:', account);
     this.getData();
   }
 
@@ -80,9 +73,6 @@ class AccountDetail extends React.Component {
     if (key) {
       this.setState({privateKey: key.PrivateKey, paymentAddress: key.PaymentAddress, readonlyKey: key.ReadonlyKey})
     }
-    // if(!key.PrivateKey) {
-    //   await this.getPrivateKey();
-    // }
 
     const result = await Account.getBalance([this.state.account.name, 1, "12345678"]);
     if (result.error) {
@@ -101,36 +91,6 @@ class AccountDetail extends React.Component {
       onFinish(data);
     }
   }
-  // getPrivateKey = async () => {
-  //   let { paymentAddress} = this.state;
-
-  //   const result = await Account.getPrivateKey(paymentAddress);
-  //   if (result && result.PrivateKey) {
-  //     const privateKey = result.PrivateKey;
-  //     this.setState({privateKey: result.PrivateKey});
-  //   }
-  // }
-
-  doExportSealer = async () => {
-    let {privateKey, sealerKey} = this.state;
-    if (sealerKey) {
-      this.setState({sealerKey: false});
-    }
-    else {
-      if (!privateKey) {
-        await this.getPrivateKey();
-      }
-
-      if (privateKey) {
-        sealerKey = await Account.getSealerKey(privateKey);
-        if (sealerKey) {
-          this.setState({sealerKey});
-        }
-      }
-    }
-  }
-
- 
 
   handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -180,6 +140,33 @@ class AccountDetail extends React.Component {
   showError = (msg) => {
     this.showAlert(msg, 'danger');
   }
+
+  removeAccount = async () => {
+    let {privateKey, paymentAddress, account} = this.state;
+
+    if (!privateKey) {
+        const result = await Account.getPrivateKey(paymentAddress);
+        if (result && result.PrivateKey) {
+        privateKey = result.PrivateKey;
+        }
+    }
+
+    if (privateKey) {
+        const result = await Account.removeAccount([privateKey, account.name, '12345678']);
+        if (result) {
+        this.onFinish({message: 'Account is removed!'});
+        }
+        else if (result.error) {
+        this.showError(result.message);
+        }
+        else {
+        this.showError('Remove error!');
+        }
+    }
+    else {
+        this.showError('Not found Private Key!');
+    }
+    }
 
 
   get showSealerKey() {
@@ -256,6 +243,10 @@ class AccountDetail extends React.Component {
     this.modalTokenCreateRef.close();
     this.tokenTabsRef.onRefresh();
   }
+  handleRemoveAccount = () => {
+    this.modalDeleteAccountRef.open();
+
+  }
   
   renderTokenCreate() {
     const {modalCreateToken} = this.state;
@@ -266,9 +257,17 @@ class AccountDetail extends React.Component {
     );
   }
 
+  renderConfirmRemove() {
+    return (
+      <ConfirmDialog title="Delete Account" onRef={modal => this.modalDeleteAccountRef = modal}
+                       onOK={() => this.removeAccount()} className={{margin: 0}}>
+          <div>Are you sure to delete?</div>
+        </ConfirmDialog>
+    );
+  }
+
   renderAccountInfo = () => {
-    const {classes} = this.props;
-    const {account, sealerKey, isExportDumpKey, showAlert, paymentAddress, balance} = this.state
+    const {paymentAddress, balance} = this.state
 
     return (
       <ListItem style={{textAlign: 'center', display: 'inline-block', backgroundColor: '#2D4CF5'}}>
@@ -294,7 +293,7 @@ class AccountDetail extends React.Component {
       readonlyKey,
       onSendToken: this.handleSendToken,
       onCreateToken: this.handleCreateToken,
-      
+      onRemoveAccount: this.handleRemoveAccount,
     }
     return (
       <MainTabs {...props}/>
@@ -303,7 +302,7 @@ class AccountDetail extends React.Component {
 
   render() {
     const {classes} = this.props;
-    const {account, sealerKey, isExportDumpKey, showAlert, paymentAddress, balance} = this.state
+    const {showAlert} = this.state
 
     return (
       <div className={classes.root}>
@@ -314,10 +313,7 @@ class AccountDetail extends React.Component {
           {this.renderTabs()}
           
         </List>
-        <ConfirmDialog title="Delete Account" onRef={modal => this.modalDeleteAccountRef = modal}
-                       onOK={() => this.removeAccount()} className={{margin: 0}}>
-          <div>Are you sure to delete?</div>
-        </ConfirmDialog>
+        {this.renderConfirmRemove()}
         {this.renderTokenCreate()}
       </div>
     );

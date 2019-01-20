@@ -64,8 +64,6 @@ class App extends Component {
       //this.modalServerRef.open();
     }
     this.getAccountList();
-
-    this.selectAccount("");
   }
 
   // addServerDefault = () => {
