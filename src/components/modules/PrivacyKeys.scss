@@ -18,5 +18,13 @@
     .keyDes {
         word-wrap: break-word;
         color: #4D5473;
+        margin-top: 10px;
+    }
+    .titleKeys {
+        display: flex;
+        justify-content: space-between;
+    }
+    .clickCopy {
+        color: #2C4CF5;
     }
 }

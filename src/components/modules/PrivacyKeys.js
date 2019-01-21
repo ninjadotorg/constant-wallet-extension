@@ -5,7 +5,7 @@ import {
     ListItemText,
     ListItem,
     Avatar,
- 
+    Snackbar
   } from '@material-ui/core';
 
 import {
@@ -18,6 +18,7 @@ Remove as IconRemove
 } from '@material-ui/icons';
 
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+
 import Account from '../../services/Account';
 import './PrivacyKeys.scss'
 
@@ -31,6 +32,8 @@ class PrivacyKeys extends React.Component {
         super(props);
         this.state = {
             privateKey: '',
+            showAlert: '',
+            isAlert: false,
 
         }
     }
@@ -44,7 +47,6 @@ class PrivacyKeys extends React.Component {
 
     getPrivateKey = async () => {
         let { paymentAddress} = this.props;
-        console.log('Payment Address:', paymentAddress);
     
         const result = await Account.getPrivateKey(paymentAddress);
         if (result && result.PrivateKey) {
@@ -52,65 +54,80 @@ class PrivacyKeys extends React.Component {
         }
       }
 
-
-      get showDumpKey() {
-        const {privateKey, readonlyKey, isExportDumpKey} = this.state;
-
-        const classes = this.props.classes;
-    
-        if (!isExportDumpKey) {
-          return "";
-        }
-        else {
-          return (
-            <div className="list-group sealerKey">
-              <CopyToClipboard text={readonlyKey} onCopy={() => this.copyToClipBoard()}>
-                <a href="#"
-                   className={"list-group-item list-group-item-action flex-column align-items-start " + classes.key}>
-                  <div className="d-flex w-100 justify-content-between">
-                    <h5 className="mb-1">Readonly Key</h5>
-                    <small className="text-muted">click to Copy</small>
-                  </div>
-                  <div className="mb-1 word-wrap-break">{readonlyKey}</div>
-                </a>
-              </CopyToClipboard>
-              <CopyToClipboard text={privateKey} onCopy={() => this.copyToClipBoard()}>
-                <a href="#"
-                   className={"list-group-item list-group-item-action flex-column align-items-start " + classes.key}>
-                  <div className="d-flex w-100 justify-content-between">
-                    <h5 className="mb-1">Private Key</h5>
-                    <small className="text-muted">click to Copy</small>
-                  </div>
-                  <div className="mb-1 word-wrap-break">{privateKey}</div>
-                </a>
-              </CopyToClipboard>
-            </div>
-          );
-        }
-      }
-
     handleOnRemoveAccount = () => {
         this.props.onRemoveAccount();
     }
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        this.setState({showAlert: '', isAlert: false});
+      };
+
+    copyToClipBoard = () => {
+        this.showAlert('Copied!', 'info');
+    }
+
+    showAlert = (msg, flag = 'warning') => {
+        let showAlert = '', isAlert = true, icon = <IconWarning/>;
+    
+        if (flag === 'success')
+          icon = <IconSuccess/>;
+        else if (flag === 'danger')
+          icon = <IconError/>;
+        else
+          icon = '';
+    
+        this.setState({isAlert}, () => {
+          showAlert = <Snackbar
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            open={isAlert}
+            autoHideDuration={2000}
+            onClose={this.handleClose}
+          >
+            <div className={"alert alert-" + flag} role="alert">{icon} {msg}</div>
+          </Snackbar>
+    
+          this.setState({showAlert});
+        });
+      }
     
 
     renderReadonlyKey = () => {
         const { readonlyKey } = this.props;
         return (
-            <div className="wrapperKeys">
-                <div className="keyNameReadonly">Readonly Keys</div>
-                <div className="keyDes">{readonlyKey}</div>
-            </div>
+            <CopyToClipboard text={readonlyKey} onCopy={() => this.copyToClipBoard()}>
+                <div className="wrapperKeys">
+                    <div className="titleKeys">
+                        <div className="keyNameReadonly">Readonly Keys</div>
+                        <span className="clickCopy">Click to copy</span>
+
+                    </div>
+                    <div className="keyDes">{readonlyKey}</div>
+                </div>
+            </CopyToClipboard>
+
         );
     }
 
     renderPrivacyKey = () => {
         const { privateKey } = this.state;
         return (
-            <div className="wrapperKeys">
-                <div className="keyNamePrivacy">Privacy Keys</div>
-                <div className="keyDes">{privateKey}</div>
-            </div>
+            <CopyToClipboard text={privateKey} onCopy={() => this.copyToClipBoard()}>
+                <div className="wrapperKeys">
+                    <div className="titleKeys">
+                        <div className="keyNamePrivacy">Privacy Keys</div>
+                        <div className="clickCopy">Click to copy</div>
+                    </div>
+                    <div className="keyDes">{privateKey}</div>
+                </div>
+            </CopyToClipboard>
+
         );
     }
     renderRemoveAccount = () => {
@@ -127,9 +144,11 @@ class PrivacyKeys extends React.Component {
     }
 
     render () {
-        const { isExportDumpKey } = this.state;
+        const {showAlert} = this.state
+
         return (
             <div className="wrapperPrivacyKeyContainer">
+                {showAlert}
                 {this.renderReadonlyKey()}
                 {this.renderPrivacyKey()}
                 {this.renderRemoveAccount()}
