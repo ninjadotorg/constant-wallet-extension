@@ -18,12 +18,12 @@ import {
   import TokenTabs from './TokenTabs';
 
 
-
   const styles = theme => ({
     root: {
       flexGrow: 1,
       backgroundColor: theme.palette.background.paper,
     },
+  
   });
   class MainTabs extends React.Component {
     static propTypes = {

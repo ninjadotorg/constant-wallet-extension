@@ -6,6 +6,8 @@ import {
   List,
   ListItem,
   Snackbar,
+  Input,
+  InputAdornment
 } from '@material-ui/core';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
@@ -23,6 +25,10 @@ import {
   Warning as IconWarning,
   Remove as IconRemove
 } from '@material-ui/icons';
+import CopyPasteSVG from '../../../assets/images/copy-paste.svg';
+
+import Icon from '../../core/Icon';
+
 
 import './Detail.scss';
 
@@ -277,7 +283,16 @@ class AccountDetail extends React.Component {
             <QRCode className="qrCode" value={paymentAddress} size={164} renderAs="svg" fgColor="black"/>}</div>
           <div>
             <CopyToClipboard text={paymentAddress} onCopy={() => this.copyToClipBoard()}>
-              <input className="form-control mt-2" id="paymentAddress" defaultValue={paymentAddress}/>
+              <div className="paymentInput">
+                <input className="form-control" id="paymentAddress" 
+                defaultValue={paymentAddress}
+                
+                />
+                <div className="wrapperIconPaste">
+                <Icon path={CopyPasteSVG} className="CopyPasteSVG" />
+                </div>
+
+              </div>
             </CopyToClipboard>
           </div>
           <div className="balance">{balance ? Math.round(balance).toLocaleString() : 0} CONSTANT</div>

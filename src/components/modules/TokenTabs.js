@@ -9,6 +9,8 @@ import {
 import Token from '../../services/Token';
 import TokenList from './TokenList';
 import { Button } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+
 
 import './TokenTabs.scss';
 
@@ -17,6 +19,9 @@ const styles = theme => ({
       flexGrow: 1,
       backgroundColor: theme.palette.background.paper,
     },
+    tabRoot: {
+        border: 'none'
+      }
   });
 class TokenTabs extends React.Component {
     static propTypes = {
@@ -106,6 +111,8 @@ class TokenTabs extends React.Component {
     }
     
     renderTabs() {
+        const { classes } = this.props;
+
         const { value, listCustomTokenBalance, listPrivacyTokenBalance } = this.state;
         const props = {
             list: value === 0 ? listCustomTokenBalance : listPrivacyTokenBalance,
@@ -115,14 +122,16 @@ class TokenTabs extends React.Component {
         return(
             <div className={styles.root} style={{"width": "88%"}}>
                 <Tabs
+                    classes={{
+                        root: classes.root,
+                    }}
                     value={value}
                     indicatorColor="primary"
-                    textColor="black"
                     fullWidth
                     onChange={this.handleChange}
                     className="tokenTabs"
                     >
-                    <Tab label="Custom" />
+                    <Tab classes={{root: classes.tabRoot}} label="Custom" />
                     <Tab label="Privacy" />
                 </Tabs>
                 <TokenList {...props}/>
@@ -138,4 +147,4 @@ class TokenTabs extends React.Component {
         );
     };
 }
-export default TokenTabs;
+export default withStyles(styles)(TokenTabs);
