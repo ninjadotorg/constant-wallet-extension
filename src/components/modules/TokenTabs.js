@@ -20,8 +20,10 @@ const styles = theme => ({
       backgroundColor: theme.palette.background.paper,
     },
     tabRoot: {
-        border: 'none'
-      }
+    },
+    selected: {
+        fontWeight: 'bold',
+    },
   });
 class TokenTabs extends React.Component {
     static propTypes = {
@@ -118,6 +120,11 @@ class TokenTabs extends React.Component {
             tab: value,
             ...this.props
         }
+
+        const classesTab = {
+            root: classes.tabRoot,
+            selected: classes.selected
+        }
         return(
             <div className={styles.root} style={{"width": "88%"}}>
                 <Tabs
@@ -130,8 +137,12 @@ class TokenTabs extends React.Component {
                     onChange={this.handleChange}
                     className="tokenTabs"
                     >
-                    <Tab classes={{root: classes.tabRoot}} label="Custom" />
-                    <Tab label="Privacy" />
+                    <Tab 
+                        classes={classesTab}
+                        label="Custom" />
+                    <Tab 
+                        classes={classesTab}
+                        label="Privacy" />
                 </Tabs>
                 <TokenList {...props}/>
             </div>
