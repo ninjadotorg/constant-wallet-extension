@@ -32,6 +32,10 @@ class TokenTabs extends React.Component {
             listPrivacyTokenBalance: [],
         }
     }
+    componentDidMount() {
+        const { value } = this.state;
+        this.getTokens(value);
+    }
     componentWillReceiveProps(nextProps) {
         const { value } = this.state;
         this.getTokens(value);

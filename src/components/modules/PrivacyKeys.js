@@ -39,15 +39,15 @@ class PrivacyKeys extends React.Component {
     }
 
     async componentDidMount() {
-
+        await this.getPrivateKey();
     }
     async componentWillReceiveProps(nextProps) {
+
         await this.getPrivateKey();
     }
 
     getPrivateKey = async () => {
         let { paymentAddress} = this.props;
-    
         const result = await Account.getPrivateKey(paymentAddress);
         if (result && result.PrivateKey) {
           this.setState({privateKey: result.PrivateKey});
