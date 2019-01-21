@@ -112,7 +112,6 @@ class TokenTabs extends React.Component {
     
     renderTabs() {
         const { classes } = this.props;
-        console.log("Props Tabs:", this.props);
         const { value, listCustomTokenBalance, listPrivacyTokenBalance } = this.state;
         const props = {
             list: value === 0 ? listCustomTokenBalance : listPrivacyTokenBalance,

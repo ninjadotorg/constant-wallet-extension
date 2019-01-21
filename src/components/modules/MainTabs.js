@@ -14,6 +14,9 @@ import {
     Warning as IconWarning,
     Remove as IconRemove
   } from '@material-ui/icons';
+
+  import { withStyles } from '@material-ui/core/styles';
+
   import PrivacyKeys from './PrivacyKeys';
   import TokenTabs from './TokenTabs';
   import Account from '../../services/Account';
@@ -22,8 +25,27 @@ import {
   const styles = theme => ({
     root: {
       flexGrow: 1,
-      backgroundColor: theme.palette.background.paper,
     },
+    indicator: {
+      backgroundColor: '#EBEFFA'
+    },
+    tabs: {
+      backgroundColor: '#EBEFFA',
+      
+    },
+
+    label: {
+      color: 'black'
+    },
+
+    selected: {
+      backgroundColor: 'white',
+      fontWeight: 'bold',
+    },
+
+    labelContainer: {
+      boxSizing: 'none'
+    }
   
   });
   class MainTabs extends React.Component {
@@ -67,7 +89,6 @@ import {
     renderPrivacyKey = (value) => {
         if (value !== 0) return null;
         const { privateKey } = this.state;
-        console.log('Main Tabs Props:', this.props);
         const props = {
           privateKey,
           ...this.props
@@ -100,19 +121,34 @@ import {
  
     renderTabs() {
         const {value} = this.state;
+        const { classes } = this.props;
+        const classesTab = {
+          label: classes.label,
+          selected: classes.selected,
+          labelContainer: classes.labelContainer
+        }
         return(
             <div className={styles.root} style={{"width": "100%"}}>
                 <Tabs
+                    classes={{
+                      root: classes.tabs,
+                      indicator: classes.indicator
+                  }}
                     value={value}
                     indicatorColor="primary"
                     textColor="primary"
-                    fullWidth
+                    variant="fullWidth"
                     onChange={this.handleChange}
                     className="tokenTabs"
                     >
-                    <Tab label="PRIVACY KEY" />
-                    <Tab label="HISTORY" />
-                    <Tab label="TOKENS" />  
+                    <Tab classes={classesTab} 
+                    label="PRIVACY KEY" />
+                    <Tab
+                    classes={classesTab} 
+                     label="HISTORY" />
+                    <Tab
+                    classes={classesTab} 
+                     label="TOKENS" />  
                 </Tabs>
                 {this.renderPrivacyKey(value)}
                 {this.renderHistory(value)}
@@ -123,12 +159,12 @@ import {
 
     render() {
         return (
-            <div className = "wrapperTabs">
+            <div className = "wrapperMainTabs">
             {this.renderTabs()}
             </div>
         );
     }
   }
-  export default MainTabs;
+  export default withStyles(styles)(MainTabs);
 
 

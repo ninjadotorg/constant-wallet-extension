@@ -122,7 +122,6 @@ class App extends Component {
     }
     else {
       //Get Account default
-      console.log("Home Selected Account:", selectedAccount);
       screen = <Home account={selectedAccount}/>;
     }
 

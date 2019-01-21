@@ -49,10 +49,12 @@ const styles = theme => ({
 });
 
 class AccountDetail extends React.Component {
+  static propTypes = {
+    account: PropTypes.object.isRequired
+  }
   constructor(props) {
     super(props);
     this.state = {
-      account: props.account,
       sealerKey: '',
       paymentAddress: '',
       readonlyKey: '',
@@ -65,22 +67,22 @@ class AccountDetail extends React.Component {
   }
 
   componentDidMount() {
-    this.getData();
+    const { account } = this.props;
+    this.getData(account);
   }
 
   componentWillReceiveProps(nextProps) {
-    const {account} = nextProps;
-    this.setState( { account});
-    this.getData();
+    const { account } = nextProps;
+    this.getData(account);
   }
 
-  async getData() {
-    const key = await Account.getPaymentAddress(this.state.account.name);
+  async getData(account) {
+    const key = await Account.getPaymentAddress(account.name);
     if (key) {
       this.setState({privateKey: key.PrivateKey, paymentAddress: key.PaymentAddress, readonlyKey: key.ReadonlyKey})
     }
 
-    const result = await Account.getBalance([this.state.account.name, 1, "12345678"]);
+    const result = await Account.getBalance([account.name, 1, "12345678"]);
     if (result.error) {
       this.showError(result.message);
     }
@@ -148,8 +150,8 @@ class AccountDetail extends React.Component {
   }
 
   removeAccount = async () => {
-    let {privateKey, paymentAddress, account} = this.state;
-
+    let {privateKey, paymentAddress} = this.state;
+    const { account } = this.props;
     if (!privateKey) {
         const result = await Account.getPrivateKey(paymentAddress);
         if (result && result.PrivateKey) {

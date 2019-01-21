@@ -88,7 +88,7 @@ class PrivacyKeys extends React.Component {
             <CopyToClipboard text={readonlyKey} onCopy={() => this.copyToClipBoard()}>
                 <div className="wrapperKeys">
                     <div className="titleKeys">
-                        <div className="keyNameReadonly">Readonly Keys</div>
+                        <div className="keyNameReadonly">READONLY KEY</div>
                         <span className="clickCopy">Click to copy</span>
 
                     </div>
@@ -105,7 +105,7 @@ class PrivacyKeys extends React.Component {
             <CopyToClipboard text={privateKey} onCopy={() => this.copyToClipBoard()}>
                 <div className="wrapperKeys">
                     <div className="titleKeys">
-                        <div className="keyNamePrivacy">Privacy Keys</div>
+                        <div className="keyNamePrivacy">PRIVATE KEY</div>
                         <div className="clickCopy">Click to copy</div>
                     </div>
                     <div className="keyDes">{privateKey}</div>
