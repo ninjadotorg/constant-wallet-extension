@@ -16,6 +16,7 @@ import {
   } from '@material-ui/icons';
   import PrivacyKeys from './PrivacyKeys';
   import TokenTabs from './TokenTabs';
+  import Account from '../../services/Account';
 
 
   const styles = theme => ({
@@ -41,21 +42,44 @@ import {
 
         }
     }
+    async componentDidMount() {
+      await this.getPrivateKey();
+    }
+
+    async componentWillReceiveProps(nextProps) {
+      await this.getPrivateKey();
+
+    }
+
 
     handleChange = (event, value) => {
         this.setState({ value });
     };
+
+    getPrivateKey = async () => {
+      let { paymentAddress} = this.props;
+      const result = await Account.getPrivateKey(paymentAddress);
+      if (result && result.PrivateKey) {
+        this.setState({privateKey: result.PrivateKey});
+      }
+    }
+
     renderPrivacyKey = (value) => {
         if (value !== 0) return null;
+        const { privateKey } = this.state;
         console.log('Main Tabs Props:', this.props);
+        const props = {
+          privateKey,
+          ...this.props
+        }
         return (
-            <PrivacyKeys {...this.props}/>
+            <PrivacyKeys {...props}/>
         );
     }
     renderHistory = (value) => {
         if (value !== 1) return null;
         return (
-            <div>ITEM HISTORY</div>
+            <div></div>
         );
     }
 

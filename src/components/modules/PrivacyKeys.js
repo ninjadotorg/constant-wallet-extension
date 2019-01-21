@@ -19,40 +19,24 @@ Remove as IconRemove
 
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
-import Account from '../../services/Account';
 import './PrivacyKeys.scss'
 
 class PrivacyKeys extends React.Component {
     static propTypes = {
         paymentAddress: PropTypes.string.isRequired,
         readonlyKey: PropTypes.string.isRequired,
+        privateKey: PropTypes.string.isRequired,
         onRemoveAccount: PropTypes.func,
     }
     constructor(props) {
         super(props);
         this.state = {
-            privateKey: '',
             showAlert: '',
             isAlert: false,
 
         }
     }
-
-    async componentDidMount() {
-        await this.getPrivateKey();
-    }
-    async componentWillReceiveProps(nextProps) {
-
-        await this.getPrivateKey();
-    }
-
-    getPrivateKey = async () => {
-        let { paymentAddress} = this.props;
-        const result = await Account.getPrivateKey(paymentAddress);
-        if (result && result.PrivateKey) {
-          this.setState({privateKey: result.PrivateKey});
-        }
-      }
+    
 
     handleOnRemoveAccount = () => {
         this.props.onRemoveAccount();
@@ -116,7 +100,7 @@ class PrivacyKeys extends React.Component {
     }
 
     renderPrivacyKey = () => {
-        const { privateKey } = this.state;
+        const { privateKey } = this.props;
         return (
             <CopyToClipboard text={privateKey} onCopy={() => this.copyToClipBoard()}>
                 <div className="wrapperKeys">
