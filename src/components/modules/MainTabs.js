@@ -43,9 +43,6 @@ import {
       fontWeight: 'bold',
     },
 
-    labelContainer: {
-      boxSizing: 'none'
-    }
   
   });
   class MainTabs extends React.Component {

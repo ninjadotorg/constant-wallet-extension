@@ -29,6 +29,9 @@ const styles = {
     marginLeft: -12,
     marginRight: 20,
   },
+  appBar: {
+    color: '#2D4CF5'
+  }
 
 };
 
@@ -228,7 +231,9 @@ class Header extends React.Component {
     return (
       <div className={classes.root}>
         {showAlert}
-        <AppBar position="static">
+        <AppBar
+        classes={classes.appBar}
+        position="static">
           <Toolbar>
             <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
               <MenuIcon onClick={this.toggleDrawer('left', true)} />
