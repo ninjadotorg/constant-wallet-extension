@@ -15,6 +15,7 @@ import ConfirmDialog from '../../core/ConfirmDialog'
 import Dialog from '../../core/Dialog'
 import Account from '../../../services/Account';
 import TokenTabs from '../../modules/TokenTabs';
+import AccountSend from './Send';
 import CreateToken from '../../layout/Token/CreateToken';
 import MainTabs from '../../modules/MainTabs';
 import {
@@ -63,6 +64,7 @@ class AccountDetail extends React.Component {
       isAlert: false,
       isExportDumpKey: false,
       modalCreateToken: '',
+      modalAccountSend: '',
     }
   }
 
@@ -274,8 +276,27 @@ class AccountDetail extends React.Component {
     );
   }
 
+  renderSendConstant() {
+    const {modalAccountSend} = this.state
+    return (
+      <Dialog title="Send Coin" onRef={modal => this.modalAccountSendRef = modal} className={{ margin: 0 }}>
+        {modalAccountSend}
+      </Dialog>
+    )
+  }
+
+  openAccountSend = (account) => {
+    // this.modalAccountDetailRef.close();
+    this.setState({
+      modalAccountDetail: '',
+      modalAccountSend: <AccountSend account={this.state.accountSelected} />
+    });
+    this.modalAccountSendRef.open();
+  }
+
   renderAccountInfo = () => {
     const {paymentAddress, balance} = this.state
+    const {account} = this.props
 
     return (
       <ListItem style={{textAlign: 'center', display: 'inline-block', backgroundColor: '#2D4CF5'}}>
@@ -298,6 +319,9 @@ class AccountDetail extends React.Component {
             </CopyToClipboard>
           </div>
           <div className="balance">{balance ? Math.round(balance).toLocaleString() : 0} CONSTANT</div>
+          <div onClick={() => this.openAccountSend(account)}>
+            Send
+          </div>
         </div>
       </ListItem>
 
@@ -332,6 +356,7 @@ class AccountDetail extends React.Component {
         </List>
         {this.renderConfirmRemove()}
         {this.renderTokenCreate()}
+        {this.renderSendConstant()}
       </div>
     );
   }
