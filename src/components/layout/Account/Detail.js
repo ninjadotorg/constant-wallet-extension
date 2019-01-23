@@ -289,7 +289,7 @@ class AccountDetail extends React.Component {
     // this.modalAccountDetailRef.close();
     this.setState({
       modalAccountDetail: '',
-      modalAccountSend: <AccountSend account={this.state.accountSelected} />
+      modalAccountSend: <AccountSend account={this.props.account} />
     });
     this.modalAccountSendRef.open();
   }
