@@ -53,11 +53,13 @@ class AccountDetail extends React.Component {
   static propTypes = {
     account: PropTypes.object.isRequired
   }
+
   constructor(props) {
     super(props);
     this.state = {
       sealerKey: '',
       paymentAddress: '',
+      privateKey: '',
       readonlyKey: '',
       showAlert: '',
       balance: 0,
@@ -69,19 +71,22 @@ class AccountDetail extends React.Component {
   }
 
   componentDidMount() {
-    const { account } = this.props;
+    const {account} = this.props;
     this.getData(account);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { account } = nextProps;
+    const {account} = nextProps;
     this.getData(account);
   }
 
   async getData(account) {
     const key = await Account.getPaymentAddress(account.name);
     if (key) {
-      this.setState({privateKey: key.PrivateKey, paymentAddress: key.PaymentAddress, readonlyKey: key.ReadonlyKey})
+      const result = await Account.getPrivateKey(key.PaymentAddress);
+      if (result) {
+        this.setState({privateKey: result.PrivateKey, paymentAddress: key.PaymentAddress, readonlyKey: key.ReadonlyKey})
+      }
     }
 
     const result = await Account.getBalance([account.name, 1, "12345678"]);
@@ -114,7 +119,6 @@ class AccountDetail extends React.Component {
     this.showAlert('Copied!', 'info');
   }
 
- 
 
   showAlert = (msg, flag = 'warning') => {
     let showAlert = '', isAlert = true, icon = <IconWarning/>;
@@ -153,30 +157,30 @@ class AccountDetail extends React.Component {
 
   removeAccount = async () => {
     let {privateKey, paymentAddress} = this.state;
-    const { account } = this.props;
+    const {account} = this.props;
     if (!privateKey) {
-        const result = await Account.getPrivateKey(paymentAddress);
-        if (result && result.PrivateKey) {
+      const result = await Account.getPrivateKey(paymentAddress);
+      if (result && result.PrivateKey) {
         privateKey = result.PrivateKey;
-        }
+      }
     }
 
     if (privateKey) {
-        const result = await Account.removeAccount([privateKey, account.name, '12345678']);
-        if (result) {
+      const result = await Account.removeAccount([privateKey, account.name, '12345678']);
+      if (result) {
         this.onFinish({message: 'Account is removed!'});
-        }
-        else if (result.error) {
+      }
+      else if (result.error) {
         this.showError(result.message);
-        }
-        else {
+      }
+      else {
         this.showError('Remove error!');
-        }
+      }
     }
     else {
-        this.showError('Not found Private Key!');
+      this.showError('Not found Private Key!');
     }
-    }
+  }
 
 
   get showSealerKey() {
@@ -213,8 +217,9 @@ class AccountDetail extends React.Component {
       );
     }
   }
-  handleSendToken = (item, tab)=> {
-    const { paymentAddress, balance, privateKey } = this.state;
+
+  handleSendToken = (item, tab) => {
+    const {paymentAddress, balance, privateKey} = this.state;
     const props = {
       paymentAddress,
       privateKey,
@@ -224,7 +229,7 @@ class AccountDetail extends React.Component {
       tokenSymbol: item.Symbol,
       type: tab,
       isCreate: false,
-      onClose:this.handleCloseCreateToken
+      onClose: this.handleCloseCreateToken
 
     }
     this.setState({
@@ -232,24 +237,25 @@ class AccountDetail extends React.Component {
     })
     this.modalTokenCreateRef.open();
   }
-  handleCreateToken = (tab)=> {
-    const { paymentAddress, privateKey } = this.state;
+  handleCreateToken = (tab) => {
+    const {paymentAddress, privateKey} = this.state;
     const props = {
       paymentAddress,
       privateKey,
       toAddress: paymentAddress,
       type: tab,
       isCreate: true,
-      onClose:this.handleCloseCreateToken
+      onClose: this.handleCloseCreateToken
 
     }
+    console.log(props)
     this.setState({
       modalCreateToken: <CreateToken {...props} />
     })
     this.modalTokenCreateRef.open();
 
-  } 
-  handleCloseCreateToken = ()=> {
+  }
+  handleCloseCreateToken = () => {
     this.modalTokenCreateRef.close();
     this.tokenTabsRef.onRefresh();
   }
@@ -257,11 +263,11 @@ class AccountDetail extends React.Component {
     this.modalDeleteAccountRef.open();
 
   }
-  
+
   renderTokenCreate() {
     const {modalCreateToken} = this.state;
     return (
-      <Dialog title="Send Token" onRef={modal => this.modalTokenCreateRef = modal} className={{ margin: 0 }}>
+      <Dialog title="Send Token" onRef={modal => this.modalTokenCreateRef = modal} className={{margin: 0}}>
         {modalCreateToken}
       </Dialog>
     );
@@ -270,16 +276,16 @@ class AccountDetail extends React.Component {
   renderConfirmRemove() {
     return (
       <ConfirmDialog title="Delete Account" onRef={modal => this.modalDeleteAccountRef = modal}
-                       onOK={() => this.removeAccount()} className={{margin: 0}}>
-          <div>Are you sure to delete?</div>
-        </ConfirmDialog>
+                     onOK={() => this.removeAccount()} className={{margin: 0}}>
+        <div>Are you sure to delete?</div>
+      </ConfirmDialog>
     );
   }
 
   renderSendConstant() {
     const {modalAccountSend} = this.state
     return (
-      <Dialog title="Send Coin" onRef={modal => this.modalAccountSendRef = modal} className={{ margin: 0 }}>
+      <Dialog title="Send Coin" onRef={modal => this.modalAccountSendRef = modal} className={{margin: 0}}>
         {modalAccountSend}
       </Dialog>
     )
@@ -289,7 +295,7 @@ class AccountDetail extends React.Component {
     // this.modalAccountDetailRef.close();
     this.setState({
       modalAccountDetail: '',
-      modalAccountSend: <AccountSend account={this.props.account} />
+      modalAccountSend: <AccountSend account={this.props.account}/>
     });
     this.modalAccountSendRef.open();
   }
@@ -300,19 +306,19 @@ class AccountDetail extends React.Component {
 
     return (
       <ListItem style={{textAlign: 'center', display: 'inline-block', backgroundColor: '#2D4CF5'}}>
-      <div className="wrapperAccountInfo">
+        <div className="wrapperAccountInfo">
           <div className="wrapperQRCode">
-          {paymentAddress &&
+            {paymentAddress &&
             <QRCode className="qrCode" value={paymentAddress} size={164} renderAs="svg" fgColor="black"/>}</div>
           <div>
             <CopyToClipboard text={paymentAddress} onCopy={() => this.copyToClipBoard()}>
               <div className="paymentInput">
-                <input className="form-control" id="paymentAddress" 
-                defaultValue={paymentAddress}
-                
+                <input className="form-control" id="paymentAddress"
+                       defaultValue={paymentAddress}
+
                 />
                 <div className="wrapperIconPaste">
-                <Icon path={CopyPasteSVG} className="CopyPasteSVG" />
+                  <Icon path={CopyPasteSVG} className="CopyPasteSVG"/>
                 </div>
 
               </div>
@@ -327,8 +333,9 @@ class AccountDetail extends React.Component {
 
     );
   }
+
   renderTabs() {
-    const { paymentAddress, readonlyKey } = this.state;
+    const {paymentAddress, readonlyKey} = this.state;
     const props = {
       paymentAddress,
       readonlyKey,
@@ -352,7 +359,7 @@ class AccountDetail extends React.Component {
           {this.renderAccountInfo()}
           <Divider/>
           {this.renderTabs()}
-          
+
         </List>
         {this.renderConfirmRemove()}
         {this.renderTokenCreate()}
